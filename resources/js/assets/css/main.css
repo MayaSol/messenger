@@ -1,0 +1,502 @@
+@config "../../../../tailwind.config.js";
+/* @import "tailwindcss";
+@import './primevue/_all.css';
+@import './custom/_all.css'; */
+
+/* @import "tailwindcss/base";
+@import "tailwindcss/components";
+@import './primevue/_all.css';
+@import './custom/_all.css';
+@import "tailwindcss/utilities"; */
+
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+/* @import "tailwindcss/preflight.css" layer(base); */
+@import './primevue/_all.css' layer(components);
+/* @import './custom/_all.css' layer(components); */
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@layer base {
+    body {
+        overflow: hidden;  /* Убрали, чтобы обновлялась страница в pwa по свайпу вниз*/
+        margin: 0 !important;
+        height: 100vh;
+    }
+
+    html {
+        /* @apply font-serif; */
+        font-size: 16px;
+        /* font-family: 'Montserrat', sans-serif; */
+        font-family: 'Gilroy', sans-serif;
+    }
+    #__nuxt{
+        height: 100%;
+    }
+    
+    h1, h2, h3, h4{
+        @apply font-bold;
+    }
+
+    a:focus-within {
+        outline: none;
+    }
+
+    input[type="number"] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+        margin: 0;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+}
+
+@layer components {
+    .chat__bg {
+        background-image: url("/images/chat_work_bg.svg"), linear-gradient(136deg, rgb(229, 255, 244) 0%, rgb(180, 222, 200) 55.21%, rgb(224, 255, 242) 100%), none;
+    }
+
+    .chat__bg--discussion {
+        background-image: url("/images/chat_work_bg.svg"), linear-gradient(136deg, rgb(229, 244, 255) 0%, rgb(180, 209, 232) 55.21%, rgb(224, 242, 255) 100%), none;
+    }
+
+    .dark .chat__bg {
+        background-image: url("/images/chat_work_bg.svg"), linear-gradient(136deg, var(--p-surface-900) 0%, var(--p-surface-950) 55.21%, var(--p-surface-900) 100%), none;
+    }
+
+    .dark .chat__bg--discussion {
+        background-image: url("/images/chat_work_bg.svg"), linear-gradient(136deg, var(--p-surface-900) 0%, var(--p-surface-950) 55.21%, var(--p-surface-900) 100%), none;
+    }    
+
+
+    .chat-work__msg {
+        max-width: 75%;
+        padding: 8px 10px;
+        border-radius: 4px;
+        background-color: #fff;
+        color: #26292b;
+    }
+
+    /* .chat-work__msg--me {
+        background-color: #55AEF6;
+        color: #fff;
+    } */
+
+    .chat-work__msg--client {
+        background-color: #d9fdd3;
+        /* color: #fff; */
+    }
+
+    .chat-work__msg-user {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1.35;
+        color: #0f3d78;
+    }
+
+    .chat-work__msg--me .chat-work__msg-user,
+    .chat-work__msg--client .chat-work__msg-user{
+        /* color: #fff; */
+    }
+
+    .chat-work__created {
+        float: right;
+        margin: 2px 0 -2px 10px;
+    }
+
+    .chat__date-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 28px;
+        border-radius: 80px;
+        font-size: 13px;
+        box-shadow: 0 1px 1px #26292b1a;
+    }
+
+    .chat-feed__entity--event i {
+        word-break: break-word;
+    }
+
+    .chat-feed__entity--msg,
+    .chat-feed__entity--task {
+        background-color: #fff;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: box-shadow ease-in-out .2s;
+    }
+
+    .chat-feed__entity--msg:hover,
+    .chat-feed__entity--task:hover {
+        box-shadow: 0px 8px 17px -12px #92a3b4;
+    }
+
+    .chat-feed__entity-icon i {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: #fff;
+        width: 36px;
+        height: 36px;
+        background-color: #cbd0d6;
+        border-radius: 50%;
+    }
+
+    .chat-feed__entity-title {
+        font-size: 13px;
+        line-height: 17px;
+        color: #92a3b4;
+    }
+
+    .section {
+        position: relative;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .custom-ifta-input {
+        @apply pt-6 pl-2.5 w-full border-primary-300 p-[0.45rem] m-0 border-[0.5px] text-black bg-white outline-0 hover:border-primary-400 active:border-surface-300 dark:bg-surface-950 dark:border-surface-600 dark:text-white disabled:bg-surface-200 disabled:text-surface-500;
+    }
+
+    /* .modal-form {
+        @apply grid gap-[1px] grid-cols-1 lg:grid-cols-[420px_1fr] xl:grid-cols-[480px_1fr] 2xl:grid-cols-[600px_1fr] h-[calc(100%-var(--modal-header-height))] text-text-color overflow-hidden bg-modal-body-bg;
+    }
+
+    .panel-left {
+        @apply lg:!w-[420px] xl:!w-[480px] 2xl:!w-[600px] lg:!grow-0 lg:!basis-auto;
+    }
+
+    .custom-nav {
+        @apply relative flex items-center gap-2 border-b-2 text-surface-700 dark:text-surface-400 dark:border-surface-500 justify-between w-full
+    }
+    .custom-nav-tab {
+        @apply text-center px-2 py-3 font-medium border-surface-500 cursor-pointer border-b-2 border-transparent -mb-[2px]
+    }
+    .custom-nav-tab_active {
+        @apply !text-surface-500 dark:!text-surface-100 !border-surface-500 dark:!border-surface-100
+    }
+    .custom-nav-history {
+        @apply pi pi-history text-center px-2 py-3 font-medium border-surface-500 cursor-pointer border-b-2 border-transparent -mb-[2px]
+    } */
+
+}
+
+@layer utilities {
+/* Режимы для скролла (Chrome, Edge, Safari) */
+    /* Светлый */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+        background-color: var(--p-surface-500);
+        border-radius: 4px;
+    }
+    ::-webkit-scrollbar-track {
+        /*background-color: var(--body);*/
+        background-color: transparent;
+    }
+    /* Темный */
+   .dark ::-webkit-scrollbar-thumb {
+       background-color: var(--p-surface-950);
+   }
+}
+
+
+ .test {
+    border: 1px solid red;
+    display: flex;
+    user-select: none;    
+ }
+
+ ::placeholder {
+  color: gray;
+}
+
+/* @import 'vue-select/dist/vue-select.css'; */
+
+@font-face {
+  font-family: "Montserrat";
+  src: url("../fonts/Montserrat-Light.woff2") format("woff2"),
+      url("../fonts/Montserrat-Light.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  src: url("../fonts/Montserrat-Regular.woff2") format("woff2"),
+      url("../fonts/Montserrat-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  src: url("../fonts/Montserrat-SemiBold.woff2") format("woff2"),
+      url("../fonts/Montserrat-SemiBold.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+}
+
+
+@font-face {
+  font-family: "Gilroy";
+  src: url("../fonts/Gilroy-Regular.woff2") format("woff2"),
+      url("../fonts/Gilroy-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Gilroy";
+  src: url("../fonts/Gilroy-Medium.woff2") format("woff2"),
+      url("../fonts/Gilroy-Medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Gilroy";
+  src: url("../fonts/Gilroy-Bold.woff2") format("woff2"),
+      url("../fonts/Gilroy-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Gilroy";
+  src: url("../fonts/Gilroy-SemiBold.woff2") format("woff2"),
+      url("../fonts/Gilroy-SemiBold.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+}
+
+
+@font-face {
+  font-family: "Gilroy";
+  src: url("../fonts/Gilroy-Regular.woff2") format("woff2"),
+      url("../fonts/Gilroy-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+
+
+
+/* Основные Цвета Светлый режим */
+:root {
+    /* --p-primary-50: #fffbeb;
+    --p-primary-100: #fef3c7;
+    --p-primary-200: #fde68a;
+    --p-primary-300: #fcd34d;
+    --p-primary-400: #fbbf24;
+    --p-primary-500: #f59e0b;
+    --p-primary-600: #d97706;
+    --p-primary-700: #b45309;
+    --p-primary-800: #92400e;
+    --p-primary-900: #78350f;
+    --p-primary-950: #451a03; */
+    --p-surface-0: #ffffff;
+    --p-surface-50: #f8fafc;
+    --p-surface-100: #f1f5f9;
+    --p-surface-200: #e2e8f0;
+    --p-surface-300: #cbd5e1;
+    --p-surface-400: #94a3b8;
+    --p-surface-500: #64748b;
+    --p-surface-600: #475569;
+    --p-surface-700: #334155;
+    --p-surface-800: #1e293b;
+    --p-surface-900: #0f172a;
+    --p-surface-950: #020617;
+    --p-primary-50: var(--p-surface-50);
+    --p-primary-100: var(--p-surface-100);
+    --p-primary-200: var(--p-surface-200);
+    --p-primary-300: var(--p-surface-300);
+    --p-primary-400: var(--p-surface-400);
+    --p-primary-500: var(--p-surface-500);
+    --p-primary-600: var(--p-surface-600);
+    --p-primary-700: var(--p-surface-700);
+    --p-primary-800: var(--p-surface-800);
+    --p-primary-900: var(--p-surface-900);
+    --p-primary-950: var(--p-surface-950);
+    --p-content-border-radius: 2px;
+    /*Админка */
+    --primary: rgb(30,150,252);
+    --secondary: rgb(29,138,153);
+    --body: rgb(249, 250, 251);
+    --dark-DEFAULT: rgb(30, 31, 67);
+    --dark-50: rgb(249, 250, 251);
+    --dark-100: rgb(243, 244, 246);
+    --dark-200: rgb(229, 231, 235);
+    --dark-300: rgb(209, 213, 219);
+    --dark-400: rgb(156, 163, 175);
+    --dark-500: rgb(107, 114, 128);
+    --dark-600: rgb(75, 85, 99);
+    --dark-700: rgb(55, 65, 81);
+    --dark-800: rgb(31, 41, 55);
+    --dark-900: rgb(17, 24, 39);
+    --success-bg: rgb(209, 255, 209);
+    --success-text: rgb(15, 99, 15);
+    --warning-bg: rgb(255, 246, 207);
+    --warning-text: rgb(92, 77, 6);
+    --error: rgb(224, 45, 45);
+    --error-bg: rgb(255, 224, 224);
+    --error-text: rgb(81, 20, 20);
+    --info-bg: rgb(196, 224, 255);
+    --info-text: rgb(34, 65, 124);
+}
+
+/* Основные Цвета Темный режим */
+:root.dark {
+  --body: rgb(27, 37, 59);
+  --success-bg:rgb(17, 157, 17);
+  --success-text: rgb(178, 255, 178);
+  --warning-bg: rgb(225, 169, 0);
+  --warning-text: rgb(255, 255, 199);
+  --error: rgb(185, 28, 28);
+  --error-bg: rgb(190, 10, 10);
+  --error-text: rgb(255, 197, 197);
+  --info-bg: rgb(38, 93, 205);
+  --info-text: rgb(179, 220, 255);
+  --dark-50: rgb(83, 103, 132);
+  --dark-100: rgb(74, 90, 121);
+  --dark-200: rgb(65, 81, 114);
+  --dark-300: rgb(53, 69, 103);
+  --dark-400: rgb(48, 61, 93);
+  --dark-500: rgb(41, 53, 82);
+  --dark-600: rgb(40, 51, 78);
+  --dark-700: rgb(39, 45, 69);
+  --dark-800: rgb(27, 37, 59);
+  --dark-900: rgb(15, 23, 42);
+}
+
+/* Цвета элментов Светлый режим */
+:root {
+  --p-primary-color: var(--p-primary-500);
+  --p-primary-contrast-color: var(--p-surface-0);
+  --p-primary-hover-color: var(--p-primary-600);
+  --p-primary-active-color: var(--p-primary-700);
+  --p-content-border-color: var(--p-surface-200);
+  --p-content-hover-background: var(--p-surface-100);
+  --p-content-hover-color: var(--p-surface-800);
+  --p-highlight-background: var(--p-primary-50);
+  --p-highlight-color: var(--p-primary-700);
+  --p-highlight-focus-background: var(--p-primary-100);
+  --p-highlight-focus-color: var(--p-primary-800);
+  --p-text-color: var(--p-surface-700);
+  --p-text-hover-color: var(--p-surface-800);
+  --p-text-muted-color: var(--p-surface-500);
+  --p-text-hover-muted-color: var(--p-surface-600);
+  --p-ground-bg: var(--p-surface-200);
+  --p-panel-bg: var(--p-surface-0);
+
+  --p-modal-body-bg: rgb(229, 231, 235);
+  --p-modal-panel-bg: var(--p-surface-0);
+
+  /* --p-sidebar-bg: var(--p-surface-800);     */
+  --p-sidebar-bg: var(--body);    
+  --p-sidebar-text: var(--dark-600);
+  --p-sidebar-item-active-bg: var(--dark-200);
+  --p-sidebar-item-active-text: #000;
+  --p-sidebar-border: var(--dark-200);
+
+  --p-header-bg: var(--body);
+
+  --p-select-border-color: rgb(209, 213, 219);
+  --p-select-text-color: var(--dark-800);
+
+  --p-input-border: rgb(209, 213, 219);
+  --p-input-focus-ring: rgba(209, 213, 219, 0.5);
+
+  --p-search-bg: rgb(229,231,235);
+  --p-search-focus-bg: rgb(255,255,255);
+  --p-search-border: rgb(209, 213, 219);
+
+  /*--p-aside-bg: var(--p-surface-0);*/
+  --p-aside-bg: var(--p-surface-0);
+  --p-aside-btn-bg: var(--p-surface-200);
+  --p-aside-input-bg: var(--p-surface-0);
+  --p-aside-input-border: var(--p-surface-300);
+  --p-aside-filter-bg: var(--p-surface-200);
+  --p-aside-filter-btn-bg: var(--p-surface-0);
+  --p-aside-dropdown-icon: var(--p-surface-500);
+  --vs-bg: var(--p-surface-0);
+  --vs-dropdown-bg: var(--p-surface-0);
+  --vs-dropdown-option--active-color: var(--p-highlight-focus-color);
+  --vs-dropdown-option--active-bg: var(--p-highlight-focus-background);
+  --vs-disabled-bg:  var(--p-surface-200);
+  --vs-selected-color: inherit;
+  --vs-dropdown-option-color: var(--p-text-color);
+  /**/
+  --p-account-bg: var(--p-surface-800);
+
+}
+
+/* Цвета элментов Темный режим */
+:root.dark {
+  --p-primary-color: var(--p-primary-400);
+  --p-primary-contrast-color: var(--p-surface-900);
+  --p-primary-hover-color: var(--p-primary-300);
+  --p-primary-active-color: var(--p-primary-200);
+  --p-content-border-color: var(--p-surface-700);
+  --p-content-hover-background: var(--p-surface-800);
+  --p-content-hover-color: var(--p-surface-0);
+  --p-highlight-background: color-mix(in srgb, var(--p-primary-400), transparent 84%);
+  --p-highlight-color: rgba(255, 255, 255, .87);
+  --p-highlight-focus-background: color-mix(in srgb, var(--p-primary-400), transparent 76%);
+  --p-highlight-focus-color: rgba(255, 255, 255, .87);
+  --p-text-color: var(--p-surface-200);
+  --p-text-hover-color: var(--p-surface-0);
+  --p-text-muted-color: var(--p-surface-400);
+  --p-text-hover-muted-color: var(--p-surface-300);
+  --p-ground-bg: var(--p-surface-900);
+  --p-panel-bg: var(--p-surface-900);
+
+  --p-modal-body-bg: var(--p-surface-900);
+  --p-modal-panel-bg: var(--body);
+
+  --p-sidebar-text: rgb(226, 232, 240);
+  --p-sidebar-item-active-bg: var(--primary);
+  --p-sidebar-item-active-text: #fff;
+  --p-sidebar-border: var(--dark-200);
+
+  --p-select-border-color: var(--dark-200);
+  --p-select-text-color: rgb(203, 213, 225);
+
+  --p-input-border: var(--dark-200);
+  --p-input-focus-ring: rgba(74, 90, 121, 0.3);
+
+  --p-search-bg: var(--dark-600);
+  --p-search-focus-bg: var(--dark-600);
+  --p-search-border: rgba(74, 90, 121, 0.3);
+
+  --p-aside-bg: var(--p-surface-800); 
+  --p-aside-btn-bg: var(--p-surface-600);
+  --p-aside-input-bg: var(--p-surface-950);
+  --p-aside-input-border: var(--p-surface-700);
+  --p-aside-filter-bg: var(--p-surface-600);
+  --p-aside-filter-btn-bg: var(--p-surface-600);
+  --p-aside-dropdown-icon: var(--p-surface-400);
+  --vs-bg: var(--p-surface-950);
+  --vs-dropdown-bg: var(--p-surface-900);
+  --vs-disabled-bg:  var(--p-surface-700);
+  --vs-selected-color: var(--p-surface-600);
+}
+
+/* Размеры */
+:root {
+  --header-height: 53px;
+  --sidebar-width-expanded: 268px;
+  --sidebar-width-collapsed: 60px;
+  --modal-header-height: 40px;
+}
+
+
