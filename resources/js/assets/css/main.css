@@ -9,12 +9,15 @@
 @import './custom/_all.css';
 @import "tailwindcss/utilities"; */
 
+
 @layer theme, base, components, utilities;
 
+
 @import "tailwindcss/theme.css" layer(theme);
-/* @import "tailwindcss/preflight.css" layer(base); */
+@import "tailwindcss/preflight.css" layer(base);
 @import './primevue/_all.css' layer(components);
-/* @import './custom/_all.css' layer(components); */
+@import 'vue-select/dist/vue-select.css' layer(components);
+@import './custom/_all.css' layer(components);
 @import "tailwindcss/utilities.css" layer(utilities);
 
 @layer base {
@@ -219,8 +222,6 @@
   color: gray;
 }
 
-/* @import 'vue-select/dist/vue-select.css'; */
-
 @font-face {
   font-family: "Montserrat";
   src: url("../fonts/Montserrat-Light.woff2") format("woff2"),
@@ -293,17 +294,6 @@
 
 /* Основные Цвета Светлый режим */
 :root {
-    /* --p-primary-50: #fffbeb;
-    --p-primary-100: #fef3c7;
-    --p-primary-200: #fde68a;
-    --p-primary-300: #fcd34d;
-    --p-primary-400: #fbbf24;
-    --p-primary-500: #f59e0b;
-    --p-primary-600: #d97706;
-    --p-primary-700: #b45309;
-    --p-primary-800: #92400e;
-    --p-primary-900: #78350f;
-    --p-primary-950: #451a03; */
     --p-surface-0: #ffffff;
     --p-surface-50: #f8fafc;
     --p-surface-100: #f1f5f9;
@@ -331,7 +321,6 @@
     /*Админка */
     --primary: rgb(30,150,252);
     --secondary: rgb(29,138,153);
-    --body: rgb(249, 250, 251);
     --dark-DEFAULT: rgb(30, 31, 67);
     --dark-50: rgb(249, 250, 251);
     --dark-100: rgb(243, 244, 246);
@@ -352,6 +341,11 @@
     --error-text: rgb(81, 20, 20);
     --info-bg: rgb(196, 224, 255);
     --info-text: rgb(34, 65, 124);
+    /*Мессенджер*/
+    --body: rgb(249, 250, 251); /*Основной фон*/
+    --text: rgb(0, 0, 0);
+
+
 }
 
 /* Основные Цвета Темный режим */

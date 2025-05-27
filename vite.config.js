@@ -6,6 +6,12 @@ import Components from 'unplugin-vue-components/vite';
 import { PrimeVueResolver } from '@primevue/auto-import-resolver';
 
 export default defineConfig({
+    define: {
+        __VUE_PROD_DEVTOOLS__: true,
+    },
+    build: {
+        minify: false,
+    },        
     plugins: [
         laravel({
             // input: ['resources/css/app.css', 'resources/js/app.js'],

@@ -62,3 +62,7 @@ public/build
 .env
 .env.*
 !.env.example
+
+
+#
+*.old
