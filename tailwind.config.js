@@ -17,6 +17,11 @@ export default {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
                 serif: ['Montserrat', ...defaultTheme.fontFamily.serif]
             },
+            colors: {
+                'accent-bg': 'var(--accent-bg)',
+                'text-white': 'var(--text-white)',
+                'white': 'var(--white)',
+            },
             // colors: {
             //     'primary-inverse': 'var(--p-primary-contrast-color)' ,
             //     'primary-hover': 'var(--p-primary-hover-color)' ,

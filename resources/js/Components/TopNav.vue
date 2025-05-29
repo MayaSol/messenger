@@ -8,11 +8,13 @@
 </script>
 
 <template>
-    <div class="flex py-1">
-        <button class="flex items-center justify-center w-[40px] h-[40px] rounded-full ml-auto cursor-pointer hover:bg-surface-300"
-            @click="openMenu"
-        >
-
+    <div class="top-nav flex p-[10px] bg-accent-bg">
+        <div class="sidebar-menu__logo w-[120px] mr-auto">
+            <img 
+              src="/images/atlon.png"/>
+        </div>
+        <button class="messenger__open-menu-btn flex items-center justify-center w-[40px] h-[40px] text-text-white rounded-full ml-auto cursor-pointer"
+            @click="openMenu">
             <svg viewBox="0 0 24 24" height="24" width="24" preserveAspectRatio="xMidYMid meet" 
             class="" fill="none">
                 <title>Новый чат</title>

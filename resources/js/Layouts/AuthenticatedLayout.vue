@@ -40,7 +40,7 @@ onBeforeMount(() => {
                 <aside 
                     class="aside-chats max-w-[0] w-full transition-all duration-300 absolute top-0 right-0 bottom-0 flex items-center text-aside-base z-[100] lg:static bg-body-bg overflow-hidden border-l border-l-sidebar-border bg-white" :style="asideChatsStyle">
                     <div class="w-full h-full lg:border-l-[1px] border-aside-bg">
-                        <div class="aside__inner p-3 h-full overflow-auto">
+                        <div class="aside__inner h-full overflow-auto">
                             <slot name="chats"></slot>
                         </div>
                     </div>

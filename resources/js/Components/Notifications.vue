@@ -23,7 +23,7 @@
   //!!! const me = useSanctumUser().value;
   const user = ref({});
 
-  const UserChatCreateRef = ref(null);
+  // const UserChatCreateRef = ref(null);
   const imboxListRef = ref(null);
   //Подгрузка новых сообщений при прокрутке
   const lastIntersectingValue = ref(true);
@@ -477,14 +477,10 @@
   // }
 
   const clickNotification = (message,index) => {
-    if (message.deal) {
-      emit('update:modelValue', {room: message.room, index: index, type: message.type, action: 'click'});
-    } else {
-      emit('update:modelValue', { room: message.room, index: index, type: message.type, action: 'click'});
-    }
-    if (index >= 0) {
-      UserChatCreateRef.value && UserChatCreateRef.value.cleanSelected();
-    }
+    emit('update:modelValue', {room: message.room, index: index, type: message.type, action: 'click', message: message});
+    // if (index >= 0) {
+    //   UserChatCreateRef.value && UserChatCreateRef.value.cleanSelected();
+    // }
   }
 
   const setViewed = async (messageId) => {
@@ -532,7 +528,7 @@
       <div class="imbox-notifications-item__inner relative flex justify-between items-start pt-[6px] pl-[6px] pb-[9px] pr-[12px] border border-solid border-[rgba(0,0,0,0.15)] dark:border-surface-200 lg:border-0 !z-[11]">
         <div class="max-w-[calc(100%-110px)] mr-auto">
           <a
-            class="imbox-message-deal inline-flex items-center text-sm font-bold leading-[120%] text-ellipsis overflow-hidden hover:underline">
+            class="imbox-message-header inline-flex items-center text-sm font-bold leading-[120%] text-ellipsis overflow-hidden hover:underline">
             <span :class="getMsgIcon(message.type)" class="mr-1"></span>
             <span>{{ message.title }}</span>
           </a>
@@ -570,10 +566,10 @@
 </template>
 
 <style scoped>
-  .imbox-message-deal {
+  .imbox-message-header {
     color: var(--p-highlight-color);
   }
-  .imbox-message-deal:hover {
+  .imbox-message-header:hover {
     text-decoration: underline;
   }
   .imbox-notifications-item {

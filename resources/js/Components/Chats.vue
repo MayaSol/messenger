@@ -43,23 +43,32 @@ const emitLastMessage = (lastMessage) => {
 </script>
 
 <template>
-  <div class="flex text-surface-700">
-    <!-- <button
-      @click="msgTabActive = 'deal_info'"
-      v-if="imboxActive.type == 'deal'"
-      class="flex items-center justify-center text-center px-2 py-3 font-medium border-b-2 cursor-pointer"
-      :class="
-        msgTabActive == 'deal_info' ? 'text-surface-500 dark:text-surface-100 border-surface-500 dark:border-surface-100' : 'border-transparent'
-      "
+  <!---->
+  <div class="flex items-center min-h-[60px] text-surface-700 bg-accent-bg">   
+    <button 
+      v-if="isMobile"
+      @click="store.isImboxMobileChatsOpen = false"
+      class="flex items-center justify-center w-[40px] h-[40px] bg-accent-bg cursor-pointer"
     >
-      <span>Инфо</span>
-    </button> -->
+      <span class="pi pi-arrow-left text-xl text-text-white"></span>
+    </button>  
+    <div class="flex items-center">
+      <div class="messenger-avatar mr-[10px]">
+        <img class="w-[40px] h-[40px]" src="images/user-avatar-default.svg" />
+      </div>
+      <div>
+        <div class="text-white">{{ imboxActive.message.title }}</div>
+      </div>
+    </div>  
+  </div>
+  <!---->
+  <div class="flex">
     <button
       @click="msgTabActive = 'user_info'"
       v-if="imboxActive.type == 'user'"
-      class="flex items-center justify-center text-center px-2 py-3 font-medium border-b-2 cursor-pointer"
+      class="flex items-center justify-center grow text-center px-2 py-3 font-medium text-surface-100 bg-accent-bg border-b-2 cursor-pointer"
       :class="
-        msgTabActive == 'user_info' ? 'text-surface-500 dark:text-surface-100 border-surface-500 dark:border-surface-100' : 'border-transparent'
+        msgTabActive == 'user_info' ? 'border-surface-50' : 'border-transparent'
       "
     >
       <span>Инфо</span>
@@ -67,31 +76,20 @@ const emitLastMessage = (lastMessage) => {
     <button
       @click="msgTabActive = 'group_info'"
       v-if="imboxActive.type == 'group'"
-      class="flex items-center justify-center text-center px-2 py-3 font-medium border-b-2 cursor-pointer"
+      class="flex items-center justify-center grow text-center px-2 py-3 font-medium text-surface-100 bg-accent-bg border-b-2 cursor-pointer"
       :class="
-        msgTabActive == 'group_info' ? 'text-surface-500 dark:text-surface-100 border-surface-500 dark:border-surface-100' : 'border-transparent'
+        msgTabActive == 'group_info' ? 'border-surface-50' : 'border-transparent'
       "
     >
       <span>Инфо</span>
     </button>
     <button
       @click="msgTabActive = 'chat'"
-      class="flex items-center justify-center text-center px-2 py-3 font-medium border-b-2 cursor-pointer"
-      :class="msgTabActive == 'chat' ? 'text-surface-500 dark:text-surface-100 border-surface-500 dark:border-surface-100' : 'border-transparent'"
+      class="flex items-center justify-center grow text-center px-2 py-3 font-medium text-surface-100 bg-accent-bg border-b-2 cursor-pointer"
+      :class="msgTabActive == 'chat' ? 'border-surface-50 dark:border-surface-100' : 'border-transparent'"
     >
       <span>Чат</span>
-      <!-- <div v-if="unreadChat"
-                        class="notifications__amount flex gap-2 ml-2">
-                        <div class="notifications__amount-chat flex justify-center items-center w-[25px] h-[25px] text-sm rounded-full bg-green-300">
-                            {{ unreadChat  }}
-                        </div>
-                    </div> -->
-    </button>
-    <button
-      v-if="isMobile"
-      class="pi pi-angle-right px-2 py-1 ml-auto self-center text-slate-500 bg-gray-200 rounded-full hover:bg-gray-300 cursor-pointer"
-      @click="store.isImboxMobileChatsOpen = false"
-    ></button>
+    </button> 
   </div>
   <Tabs
     v-model:value="msgTabActive"
@@ -125,7 +123,6 @@ const emitLastMessage = (lastMessage) => {
         <!-- v-if="msgTabActive === 'chat'" -->
         <Chat
           :type="imboxActive.type"
-          :deal="imboxActive.deal_id"
           :room="imboxActive.room"
           :key="imboxActive.room"
           :isActive="msgTabActive == 'chat'"

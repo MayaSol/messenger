@@ -108,8 +108,8 @@ const openUserChat = (...args) => {
 
   <!-- <authenticated-layout :loading="loading" page="imbox"> -->
   <AuthenticatedLayout>
-    <section class="imbox absolute h-full w-full p-[10px] pb-0">
-      <div class="flex h-full lg:gap-[12px]">
+    <section class="messenger absolute h-full w-full">
+      <div class="flex h-full">
 
         <DrawerLeft
             @open-user-chat="(...args) => { console.log('!!! args',args); openUserChat(...args)}"

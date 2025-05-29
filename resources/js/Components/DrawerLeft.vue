@@ -13,6 +13,7 @@
 
     const closeDrawer = () => {
         store.isMenuOpen = false;
+        mode.value = 'user';
     }
 
     const openUserChat = (...args) => {
@@ -55,15 +56,15 @@
         v-model:visible="store.isMenuOpen"
         :showCloseIcon = "false"
         class="h-full bg-[var(--body)] text-[var(--text)] w-full lg:w-[30%]"        
-        pt:header:class="p-[10px]"
-        pt:content:class="px-[10px]"
+        pt:header:class="p-[10px] bg-accent-bg"
+        pt:content:class="px-[10px] pt-[10px]"
     >
         <template #header>
             <button 
                 @click="closeDrawer"
                 class="flex items-center justify-center w-[40px] h-[40px] cursor-pointer"
-                >
-                <span class="pi pi-arrow-left text-xl"></span>
+            >
+                <span class="pi pi-arrow-left text-xl text-text-white"></span>
             </button>
         </template>        
         <!-- Чат с пользователем -->
@@ -84,17 +85,14 @@
             <GroupFull
              ref="chatGroupRef"
             ></GroupFull>
-            <div class="test saving">{{saving}}</div>
-            <div class="test ready-to-save">{{ readyToSave }}</div>
             <Button
                 @click.stop.prevent="newGroup"
                 title="Создать"
                 :disabled="saving || !readyToSave"
                 class="bg-emerald-400 hover:enabled:!bg-emerald-700 h-[var(--modal-header-height)] text-white border-0 flex items-center justify-center p-1 px-2"
             >
-            <p>Создать</p>
+                <p>Создать</p>
             </Button>       
-            <div class="test">{{ chatGroupRef }}</div>     
         </template>
 
 

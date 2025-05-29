@@ -167,6 +167,11 @@
         @apply pt-6 pl-2.5 w-full border-primary-300 p-[0.45rem] m-0 border-[0.5px] text-black bg-white outline-0 hover:border-primary-400 active:border-surface-300 dark:bg-surface-950 dark:border-surface-600 dark:text-white disabled:bg-surface-200 disabled:text-surface-500;
     }
 
+    /**/
+    .messenger-tab {
+
+    }
+
     /* .modal-form {
         @apply grid gap-[1px] grid-cols-1 lg:grid-cols-[420px_1fr] xl:grid-cols-[480px_1fr] 2xl:grid-cols-[600px_1fr] h-[calc(100%-var(--modal-header-height))] text-text-color overflow-hidden bg-modal-body-bg;
     }
@@ -288,10 +293,6 @@
   font-style: normal;
 }
 
-
-
-
-
 /* Основные Цвета Светлый режим */
 :root {
     --p-surface-0: #ffffff;
@@ -342,9 +343,11 @@
     --info-bg: rgb(196, 224, 255);
     --info-text: rgb(34, 65, 124);
     /*Мессенджер*/
+    --white: var(--p-surface-50);
     --body: rgb(249, 250, 251); /*Основной фон*/
     --text: rgb(0, 0, 0);
-
+    --text-white: var(--p-surface-50);
+    --accent-bg: #315764;
 
 }
 
