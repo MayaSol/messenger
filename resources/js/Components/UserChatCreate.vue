@@ -10,15 +10,19 @@
     : []
   );
 
+  console.log('[UserChatCreate] users: ', users);
+
   const selectedUser = ref(null);
   //!!! const currentUser = useSanctumUser().value;
   const currentUser = store.lists.me;
 
   const newUserChat = async () => {
+    console.log('[UserChatCreate] ',selectedUser.value,currentUser.id);
     const [user1, user2] =
       selectedUser.value.id < currentUser.id
         ? [selectedUser.value.id, currentUser.id]
         : [currentUser.id, selectedUser.value.id];
+    console.log('[UserChatCreate] newUserChat',user1,user2);
     let room = `user__${user1}_${user2}`;
     emit("open-user-chat", {
       'room': room, 
@@ -58,6 +62,7 @@
         :options="users"
         filter
         optionLabel="name"
+        optionValue="id"
         placeholder="Выберите пользователя"
         class="w-full"
         pt:root:class="dark:!border-[rgba(255,255,255,0.25)]"

@@ -5,6 +5,7 @@ import Chat from '@/Components/Chat.vue';
 import GroupInfo from '@/Components/GroupInfo.vue';
 import UserInfo from '@/Components/UserInfo.vue';
 import { useMainStore } from '@/stores/main.js';
+import { getOtherUser } from '@/utils/room-functions.js';
 
 const store = useMainStore();
 const props = defineProps({
@@ -15,14 +16,21 @@ const props = defineProps({
   },
 });
 
+const title = ref('test');
+
 const msgTabActive = ref("chat");
 const emit = defineEmits(["last-message"]);
 
-// Переключение на чаты актвной подписки
+// Переключение на чаты активной подписки
 watch(
   () => props.imboxActive,
   (newVal) => {
-    msgTabActive.value = "chat"
+    console.log('[Chats] WATCH () => props.imboxActive', newVal);
+    msgTabActive.value = "chat";
+    let userId = getOtherUser(newVal.room);
+    if (newVal.message == null) {
+      title.value = store.lists.users.find(user => user.id = userId);
+    }
     // if (msgTabActive.value == "chat") return;
     // if (newVal.type == "user") {
     //   msgTabActive.value = "user_info";
@@ -44,7 +52,7 @@ const emitLastMessage = (lastMessage) => {
 
 <template>
   <!---->
-  <div class="flex items-center min-h-[60px] text-surface-700 bg-accent-bg">   
+  <div class="flex items-center min-h-[60px] lg:px-[10px] text-surface-700 bg-accent-bg">   
     <button 
       v-if="isMobile"
       @click="store.isImboxMobileChatsOpen = false"
@@ -53,11 +61,11 @@ const emitLastMessage = (lastMessage) => {
       <span class="pi pi-arrow-left text-xl text-text-white"></span>
     </button>  
     <div class="flex items-center">
-      <div class="messenger-avatar mr-[10px]">
-        <img class="w-[40px] h-[40px]" src="images/user-avatar-default.svg" />
+      <div class="messenger-avatar w-[40px] h-[40px] flex items-center justify-center mr-[10px] bg-[#dfe9ea] rounded-full overflow-hidden">
+        <img class="w-[40px] h-[40px] -mb-[10px]" src="images/user-avatar-default.svg" />
       </div>
       <div>
-        <div class="text-white">{{ imboxActive.message.title }}</div>
+        <div class="text-white">{{ imboxActive.message && imboxActive.message.title || title }}</div>
       </div>
     </div>  
   </div>

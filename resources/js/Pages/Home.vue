@@ -72,8 +72,10 @@ const onResize = throttle(() => {
 });
 
 watch(imboxActive, (newVal) => {
+  console.log('[Home] watch(imboxActive, newVal ', newVal, isMobile.value);
   if (isMobile.value) {
-    newVal.action == 'click' ? store.isImboxMobileChatsOpen = true : store.isImboxMobileChatsOpen = false;
+    store.isImboxMobileChatsOpen = true
+    // newVal.action == 'click' ? store.isImboxMobileChatsOpen = true : store.isImboxMobileChatsOpen = false;
   } else {
     if (store.isImboxMobileChatsOpen) {
       store.isImboxMobileChatsOpen = false;
@@ -100,6 +102,7 @@ const openUserChat = (...args) => {
     room: args[0]['room'],
     type: getRoomType(args[0]['room']),
   }
+  store.isImboxMobileChatsOpen = true
 }
 
 </script>
@@ -112,8 +115,8 @@ const openUserChat = (...args) => {
       <div class="flex h-full">
 
         <DrawerLeft
-            @open-user-chat="(...args) => { console.log('!!! args',args); openUserChat(...args)}"
-            @open-group-chat="(...args) => { console.log('!!! args',args); openUserChat(...args) }"
+            @open-user-chat="(...args) => { openUserChat(...args)}"
+            @open-group-chat="(...args) => { openUserChat(...args) }"
          />
 
         <div class="w-full lg:w-[30%] panel-left flex flex-col">
@@ -128,7 +131,7 @@ const openUserChat = (...args) => {
         </div>
 
         <!-- <div class="right-panel hidden lg:block lg:flex-1 h-full text-surface-500 dark:text-surface-100 overflow-hidden border-l border-dark-200"> -->
-        <div class="right-panel hidden lg:block lg:flex-1 h-full  text-surface-500 dark:text-surface-100 border-l border-dark-200">
+        <div class="right-panel hidden lg:block lg:flex-1 h-full  text-surface-500 dark:text-surface-100 lg:border-l lg:border-dark-200">
           <div id="dashboard-chats" class="h-full" v-if="imboxActive.room">
             <Chats
                 v-if="!isMobile"

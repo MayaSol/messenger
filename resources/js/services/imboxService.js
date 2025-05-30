@@ -904,7 +904,7 @@ export const fetchLists = async () => {
         };
         return {
             success: true,
-            data: response,
+            data: response.users,
         }
     } catch (error) {
         return { success: false, error}

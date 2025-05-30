@@ -23,7 +23,7 @@ export const useMainStore = defineStore(
                 const response = await fetchLists();
                 console.log('[main.js] getLists response',response);
                 if (response.success) {
-                    this.lists = response.data;
+                    this.lists.users = response.data;
                 }     
                 this.lists.me = {
                     "id": 4,

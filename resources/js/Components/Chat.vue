@@ -2,7 +2,7 @@
   <div
     id="chat"
     ref="chatRef"
-    class="w-full h-full relative border border-t-0 dark:border-transparent flex flex-col h-section"
+    class="w-full h-full relative flex flex-col h-section"
     :class="propClass"
   >
     <div 

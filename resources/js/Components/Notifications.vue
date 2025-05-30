@@ -2,6 +2,8 @@
   import { ref, watch, nextTick, onMounted, onUnmounted, onBeforeUnmount } from "vue";
   import UserChatCreate from '@/Components/UserChatCreate.vue';
   import { dateFormat } from '@/utils/date-functions.js';
+  import { scrollToSmoothly  } from "../utils/scroll";
+
   // import { page } from '@/services/fakedata/imboxPageData.js';
   // import { fetchMessages, setImboxMessageViewed } from '@/services/api/imboxServices.js';
   // import { fetchUser } from "~/services/api/usersServices.js";
@@ -13,7 +15,7 @@
 
   const props = defineProps(["modelValue", "requestParams", "lastMessage"]); // modelValue - объект активной сделки
   const emit = defineEmits(['update:modelValue']);
-  const messages = ref({});
+  const messages = ref([]);
   // const needReaction = ref(null);
   // const loadMoreEl = ref(null);
   // const offset = ref(0); // С какой записи запрашивать
@@ -30,6 +32,7 @@
   const loading = ref(false);
 
   const getMessages = async function() {
+    console.log('[Notifications] getMessages');
     loading.value = true;
     // let params = Object.assign({}, props.requestParams)
 
@@ -56,6 +59,7 @@
               room: messages[0].room,
               index: 0,
               type: messages[0].type,
+              message: messages[0]
             });
           }
           else {
@@ -67,6 +71,7 @@
                 room: messages[index].room,
                 index: index,
                 type: messages[index].type,
+                message: messages[index]
               });          
             } else {
               // переписка из room из store не подгружена
@@ -75,6 +80,7 @@
                 room: messages[0].room,
                 index: 0,
                 type: messages[0].type,
+                message: messages[0]
               });
             }
           }
@@ -84,6 +90,7 @@
             room: null,
             index: null,
             type: null,
+            message: null
           });        
         }          
     }
@@ -126,18 +133,20 @@
   watch(
     () => props.modelValue,
     (newValue, oldValue) => {
-      console.log(`[Notifications] props.modelValue`,oldValue,newValue,newValue.action,newValue.type);
-      if (newValue.action != 'click' && newValue.type == 'user') {
+      console.log(`[Notifications] WATCH props.modelValue`,oldValue,newValue,newValue.action,newValue.type,messages.value.length);      
+      if (newValue.action != 'click' && newValue.type == 'user' && newValue.index == null) {
         // Найдем, есть ли чат с пользователем в списке
         let index = messages.value.findIndex(item => item.room == newValue.room);
+        console.log('[Notifications] WATCH props.modelValue index: ', index);
         if (index >= 0) {
           // Прокручиваем в область видимости
-          let el = imboxListRef.value.querySelector(`[data-index='${index}']`);
-          let elSize = el.getBoundingClientRect();
-          if (el.offsetTop + elSize.height > imboxListRef.value.clientHeight + imboxListRef.value.scrollTop || elSize.top < 0) {
-            scrollToSmoothly(imboxListRef.value, el.offsetTop + el.clientHeight - imboxListRef.value.clientHeight, imboxListRef.value.scrollTop);
-          }
-          emit('update:modelValue', { room: newValue.room, index: index, type: 'user', title: name}); 
+          // let el = imboxListRef.value.querySelector(`[data-index='${index}']`);
+          // let elSize = el.getBoundingClientRect();
+          // if (el.offsetTop + elSize.height > imboxListRef.value.clientHeight + imboxListRef.value.scrollTop || elSize.top < 0) {
+          //   scrollToSmoothly(imboxListRef.value, el.offsetTop + el.clientHeight - imboxListRef.value.clientHeight, imboxListRef.value.scrollTop);
+          // }
+          //
+          emit('update:modelValue', { room: newValue.room, index: index, type: 'user', message: messages.value[index]}); 
         } 
         // else {
         //   // Чата нет в списке, открываем правую вкладку
@@ -340,17 +349,22 @@
       if (el.offsetTop + elSize.height > imboxListRef.value.clientHeight + imboxListRef.value.scrollTop || elSize.top < 0) {
         scrollToSmoothly(imboxListRef.value, el.offsetTop + el.clientHeight - imboxListRef.value.clientHeight, imboxListRef.value.scrollTop);
       }
-      emit('update:modelValue', { room: room, index: index, type: 'user', title: name}); 
+      emit('update:modelValue', { room: room, index: index, type: 'user', message: messages[index]}); 
     } else {
       // Чата нет в списке, открываем правую вкладку
-      emit('update:modelValue', { room: room, index: null, type: 'user', title: name});
+      emit('update:modelValue', { room: room, index: null, type: 'user', message: messages[index]});
     }
   }  
 
   onMounted(async () => {
-    if (store.activeRoom) {
-      emit('update:modelValue', { room: store.activeRoom, index: null, type: null, title: null});
-    }
+    // if (store.activeRoom) {
+    //   //!!! Найти message по store.activeRoom и передать
+    //   let index = messages.value.findIndex(item => item.room == room);
+    //   if (index > 0) {
+    //     emit('update:modelValue', { room: store.activeRoom, index: index, type: null, message: messages[index] });
+    //   }
+ 
+    // }
 
     await nextTick();
 
@@ -395,7 +409,7 @@
 
 
   onBeforeUnmount(() => {
-    store.activeRoom = props.modelValue.room;
+    // store.activeRoom = props.modelValue.room;
   })
 
   onUnmounted(() => {
@@ -476,7 +490,7 @@
   //   store.setNewModal({modalData: deal, modalTitle: 'deal'})
   // }
 
-  const clickNotification = (message,index) => {
+  const clickNotification = (message, index) => {
     emit('update:modelValue', {room: message.room, index: index, type: message.type, action: 'click', message: message});
     // if (index >= 0) {
     //   UserChatCreateRef.value && UserChatCreateRef.value.cleanSelected();

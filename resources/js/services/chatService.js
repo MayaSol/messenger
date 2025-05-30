@@ -1,5 +1,6 @@
 export const fetchMessages = async (room) => {
 
+
     console.log('[chatService.js] fetchMessages room ', room);
     let data;
 
@@ -167,7 +168,7 @@ export const fetchMessages = async (room) => {
                 }
             ]
     } else {
-        data =    [{
+        data =  [{
                     "id": 1001,
                     "room": room,
                     "reply_to": null,
@@ -186,13 +187,13 @@ export const fetchMessages = async (room) => {
                         "id": 4,
                         "name": "Maya"
                     }
-                }];
+        }];
     }
 
     try {
       //   const response = await $api.get(`/messages?include=user,recipient,replyTo.user&filter[room]=${room}`);
       const response = {
-            "data": data      
+        "data": data      
       };
       return {
         data: response.data,

@@ -1,7 +1,7 @@
 const ptTabViewChatPreset = {
     root: {
         class: [
-        'h-[calc(100%-44px)] lg:h-[calc(100%-50px)]',
+        'h-[calc(100%-110px)] lg:h-[calc(100%-110px)]',
        // 'overflow-scroll'
         ]
     },
