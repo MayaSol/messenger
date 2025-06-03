@@ -97,7 +97,6 @@ const setLastMessage = (last_message) => {
 }
 
 const openUserChat = (...args) => {
-  console.log('[Home] openUserChat ...args', ...args, args[0]);
   imboxActive.value = {
     room: args[0]['room'],
     type: getRoomType(args[0]['room']),

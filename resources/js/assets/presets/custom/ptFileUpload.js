@@ -2,7 +2,7 @@ const ptFileDialog = {
     root: ({ props }) => ({
         class: [
             {
-                'test flex flex-wrap items-center justify-center gap-2': props.mode === 'basic'
+                'flex flex-wrap items-center justify-center gap-2': props.mode === 'basic'
             }
         ]
     }),
@@ -12,7 +12,6 @@ const ptFileDialog = {
     header: {
         class: [
             // Flexbox
-            'test',
             'flex',
             'flex-wrap',
 
@@ -41,7 +40,7 @@ const ptFileDialog = {
     content: {
         class: [
             // Position
-            'test-content relative',
+            'relative',
 
             // Colors
             'bg-surface-0',

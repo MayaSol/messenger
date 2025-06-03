@@ -16,7 +16,7 @@ const props = defineProps({
   },
 });
 
-const title = ref('test');
+const title = ref('');
 
 const msgTabActive = ref("chat");
 const emit = defineEmits(["last-message"]);
@@ -25,22 +25,14 @@ const emit = defineEmits(["last-message"]);
 watch(
   () => props.imboxActive,
   (newVal) => {
-    console.log('[Chats] WATCH () => props.imboxActive', newVal);
+    if (!newVal.room) return;
+    console.log('[Chats.vue] () => props.imboxActive newVal: ',newVal);
     msgTabActive.value = "chat";
     let userId = getOtherUser(newVal.room);
+    console.log('[Chats] userId ',userId);
     if (newVal.message == null) {
-      title.value = store.lists.users.find(user => user.id = userId);
+      title.value = store.lists.users.find(user => user.id == userId);
     }
-    // if (msgTabActive.value == "chat") return;
-    // if (newVal.type == "user") {
-    //   msgTabActive.value = "user_info";
-    // }
-    // if (newVal.type == "deal") {
-    //   msgTabActive.value = "deal_info";
-    // }
-    // if (newVal.type == "group") {
-    //   msgTabActive.value = "group_info";
-    // }
   },
   { immediate: true }
 );
@@ -65,7 +57,7 @@ const emitLastMessage = (lastMessage) => {
         <img class="w-[40px] h-[40px] -mb-[10px]" src="images/user-avatar-default.svg" />
       </div>
       <div>
-        <div class="text-white">{{ imboxActive.message && imboxActive.message.title || title }}</div>
+        <div class="text-white">{{ imboxActive.message && imboxActive.message.title || title && title.name }}</div>
       </div>
     </div>  
   </div>

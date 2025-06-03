@@ -17,6 +17,7 @@
     }
 
     const openUserChat = (...args) => {
+        console.log('[DrawerLeft] openUserChat args', args);
         emit('open-user-chat',...args);
         closeDrawer();
     }

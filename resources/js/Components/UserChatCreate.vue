@@ -17,7 +17,7 @@
   const currentUser = store.lists.me;
 
   const newUserChat = async () => {
-    console.log('[UserChatCreate] ',selectedUser.value,currentUser.id);
+    console.log('[UserChatCreate] newUserChat 1 ',selectedUser,selectedUser.value,currentUser.id);
     const [user1, user2] =
       selectedUser.value.id < currentUser.id
         ? [selectedUser.value.id, currentUser.id]
@@ -62,7 +62,6 @@
         :options="users"
         filter
         optionLabel="name"
-        optionValue="id"
         placeholder="Выберите пользователя"
         class="w-full"
         pt:root:class="dark:!border-[rgba(255,255,255,0.25)]"

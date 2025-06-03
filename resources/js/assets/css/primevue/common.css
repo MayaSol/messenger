@@ -1,8 +1,4 @@
 
-.p-test-test-tets {
-    @apply opacity-0;
-}
-
 .p-connected-overlay-enter-from {
     @apply opacity-0 scale-y-75
 }

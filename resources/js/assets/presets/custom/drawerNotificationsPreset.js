@@ -113,7 +113,7 @@ const ptDrawerNotifications = {
     mask: ({ props }) => ({
         class: [
             // Transitions
-            'test-mask transition-all',
+            'transition-all',
             'duration-400',
             { 'p-5': !props.position == 'full' },
 

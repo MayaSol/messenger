@@ -217,12 +217,6 @@
 }
 
 
- .test {
-    border: 1px solid red;
-    display: flex;
-    user-select: none;    
- }
-
  ::placeholder {
   color: gray;
 }
