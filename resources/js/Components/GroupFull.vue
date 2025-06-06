@@ -6,6 +6,7 @@
   //!!! import { createMessage  } from '@/services/api/chatWorkServices.js';
 
   import { useMainStore } from '@/stores/main.js';
+  import { event } from "@primeuix/themes/aura/timeline";
   const store = useMainStore();
 
   const saving = ref(false);
@@ -20,7 +21,15 @@
   const originalGroup = ref({});
   const activeTab = ref(0);
   const usersOptions = ref({});
-  const selectedUser = ref(null);
+  const selectedUsers = ref(null);
+  const virtualScrollerOptions = {
+    itemSize: 72, 
+    lazy: true, 
+    // autoSize: false,
+    // onLazyLoad: onLazyLoad,
+    // onScroll: onScroll
+  }
+
   // const allUsers = computed(() => listsStore.usersWithRolesList
   //   ? listsStore.usersWithRolesList.filter(user => user.id != me.id )
   //   : []
@@ -29,7 +38,7 @@
     ? store.lists.users.filter(user => user.id != store.lists.me.id )
     : []
   );
-  const setGroupData = async () => {
+  const setGroupData = () => {
     if (!props.room)  {
       // Новая группа
       group.value.users = [{id: store.lists.me.id, name: store.lists.me.name}];
@@ -89,17 +98,18 @@
   }
 
   const availableUsers = computed(() => {
+    if (Object.keys(group.value).length == 0) return [];
     return allUsers.value.filter(
       (user) =>
-        !group.value.users.some((selectedUser) => selectedUser.id == user.id)
+        !group.value.users.some((selectedUsers) => selectedUsers.id == user.id)
     );
   });
 
 
   const addParticipant = () => {
     if (!group.value.users) group.value.users = [];
-    group.value.users.push(...selectedUser.value);
-    selectedUser.value = null;
+    group.value.users.push(...selectedUsers.value);
+    selectedUsers.value = null;
   };
 
 
@@ -124,12 +134,16 @@
     }
   })
 
+  const removeUser = (event,userId) => {
+    selectedUsers.value = selectedUsers.value.filter(item => item.id != userId);
+  }
+
   onMounted(async () => {
-    await setGroupData();
+    setGroupData();
   })
 
   watch(() => props.room,async (newVal) => {
-    await setGroupData();
+    setGroupData();
   })
 
   watch(group, (newValue) => {
@@ -158,8 +172,8 @@
     </div>
   </div>
 
-  <div v-if="!loading">
-    <div class="flex flex-col gap-2 mt-2">
+  <div v-if="!loading" class="h-full flex flex-col">
+    <div class="group-new-container gap-2">
 
       <ifta-label>
         <label class="text-sm text-gray-400">Название группы</label>
@@ -170,53 +184,86 @@
         />
       </ifta-label>
     </div>
-    <Fieldset
-      legend="Участники"
-      pt:root="p-2 pb-2"
-      pt:legendlabel="text-surface-500"
-    >
-      <div class="">
+    <div class="my-2">Участники</div>
+    <div class="h-full flex flex-col">
+      <!-- <div
+        v-for="(user, index) in group.users"
+        :key="index"
+        class="flex flex-col gap-2"
+      >
         <div
-          v-for="(user, index) in group.users"
-          :key="index"
-          class="flex flex-col gap-2"
+          class="flex justify-between gap-2 border-[1px] border-slate-300 mb-2 py-1.5 px-4 rounded-md items-center"
         >
-          <div
-            class="flex justify-between gap-2 border-[1px] border-slate-300 mb-2 py-1.5 px-4 rounded-md items-center"
-          >
-            <div>{{ user ? user.name : "null" }}</div>
-            <button v-show="user.id != store.lists.me.id && isOwner" @click="removeParticipant(user.id)">
-              <i
-                class="pi pi-times-circle text-lg text-surface-400 hover:text-red-400"
-              ></i>
-            </button>
-          </div>
+          <div>{{ user ? user.name : "null" }}</div>
+          <button v-show="user.id != store.lists.me.id && isOwner" @click="removeParticipant(user.id)">
+            <i
+              class="pi pi-times-circle text-lg text-surface-400 hover:text-red-400"
+            ></i>
+          </button>
         </div>
-        <IftaLabel v-if="isOwner">
-            <label>Новый участник</label>
-            <VSelect
-              v-model="selectedUser"
-              :options="availableUsers"
-              label="name"
-              value="id"
-              multiple
-              placeholder="Выберите участника"
-              class="v-select-chatgroup"
-            >
-            </VSelect>
-        </IftaLabel>
-        <div class="flex justify-center mt-2">
-            <button
-            v-if="isOwner"
-            @click="addParticipant"
-            :disabled="!selectedUser || selectedUser.length == 0"
-            class="button-modal"
-            >
-            Добавить участника
-            </button>
-        </div>            
-      </div>
-    </Fieldset>
+      </div> -->
+
+      <div class="selected-items">
+        <Chip 
+          v-for="(item, index) in selectedUsers" 
+          :key="item.id" 
+          class="selected-item"
+          :label="item.name"
+          removable
+          @remove="(event) => removeUser(event,item.id)"
+          data-user-id="item.id"
+        />
+      </div>          
+
+      <Listbox 
+        v-model="selectedUsers" 
+        :options="availableUsers" 
+        filter 
+        multiple
+        optionLabel="name" 
+        class="w-full h-full border-none bg-transparent" 
+        pt:root:class="h-[calc(100%-40px)]"
+        pt:header:class="p-0 pb-2"
+        pt:option:class="px-0"
+        pt:listcontainer:class="h-[calc(100%-50px)]"
+        listStyle="max-height: none;"
+        scrollHeight="100%"
+        :virtualScrollerOptions="virtualScrollerOptions"
+      >
+        <template #option="slotProps">
+          <div class="flex items-center">
+              <div class="messenger-avatar w-[49px] h-[49px] flex items-center justify-center mx-[10px] py-[6px] bg-[#dfe9ea] rounded-full overflow-hidden">
+                <img class="w-[49px] h-[49px] -mb-[10px]" src="images/user-avatar-default.svg" />
+              </div>    
+              <div>{{ slotProps.option.name }}</div>
+          </div>
+      </template>
+    </Listbox>
+
+      <!-- <IftaLabel v-if="isOwner">
+          <label>Новый участник</label>
+          <VSelect
+            v-model="selectedUsers"
+            :options="availableUsers"
+            label="name"
+            value="id"
+            multiple
+            placeholder="Выберите участника"
+            class="v-select-chatgroup"
+          >
+          </VSelect>
+      </IftaLabel>
+      <div class="flex justify-center mt-2">
+          <button
+          v-if="isOwner"
+          @click="addParticipant"
+          :disabled="!selectedUsers || selectedUsers.length == 0"
+          class="button-modal"
+          >
+          Добавить участника
+          </button>
+      </div>             -->
+    </div>
   </div>
 
 </template>
@@ -227,4 +274,8 @@
     padding-top: 5px;
     padding-bottom: 7px;
  } */
+
+  .p-listbox-option-selected {
+    background-color: var(--p-surface-100);
+  }
 </style>

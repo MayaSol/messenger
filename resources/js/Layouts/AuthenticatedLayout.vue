@@ -21,7 +21,6 @@ const asideChatsStyle = computed(() => {
 });
 
 onBeforeMount(() => {
-  console.log('[AuthenticatedLayout] onBeforeMount');
   store.getLists();
 })
 

@@ -517,48 +517,48 @@
       class="imbox-notifications-list relative h-full overflow-y-auto text-black dark:text-surface-0"
       pt:content:class="w-full"
     >
-        <template v-slot:item="{ item, options }">
-          <div 
-            @click.stop = "clickNotification(item, index)"
-            class="imbox-notifications-item -mb-[1px] relative lg:shadow-[inset_0_0_0_1px_var(--p-surface-300)] dark:lg:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.25)] cursor-pointer bg-surface-0 dark:bg-surface-700"
-            :class="[item.room == modelValue.room ?
-            isMobile ? '' : '!ring-4 !ring-inset !ring-surface-400 !z-[10]' : '',
-            false && item.last_message && item.last_message.user.id == 42 && !item.last_message.is_viewed ?
-              '!bg-[#d5d8ff]' : '',
-            item.isNew ? 'imbox-notifications-item--highlight' : '']"
-          >
+      <template v-slot:item="{ item, options }">
+        <div 
+          @click.stop = "clickNotification(item, index)"
+          class="imbox-notifications-item -mb-[1px] relative lg:shadow-[inset_0_0_0_1px_var(--p-surface-300)] dark:lg:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.25)] cursor-pointer bg-surface-0 dark:bg-surface-700"
+          :class="[item.room == modelValue.room ?
+          isMobile ? '' : '!ring-4 !ring-inset !ring-surface-400 !z-[10]' : '',
+          false && item.last_message && item.last_message.user.id == 42 && !item.last_message.is_viewed ?
+            '!bg-[#d5d8ff]' : '',
+          item.isNew ? 'imbox-notifications-item--highlight' : '']"
+        >
 
-            <div class="imbox-notifications-item__inner relative flex justify-between items-start pt-[6px] pl-[6px] pb-[9px] pr-[12px] border border-solid border-[rgba(0,0,0,0.15)] dark:border-surface-200 lg:border-0 !z-[11]">
-              <div class="max-w-[calc(100%-110px)] mr-auto">
-                <a
-                  class="imbox-message-header inline-flex items-center text-sm font-bold leading-[120%] text-ellipsis overflow-hidden hover:underline">
-                  <span :class="getMsgIcon(item.type)" class="mr-1"></span>
-                  <span>{{ item.title }}</span>
-                </a>
+          <div class="imbox-notifications-item__inner relative flex justify-between items-start pt-[6px] pl-[6px] pb-[9px] pr-[12px] border border-solid border-[rgba(0,0,0,0.15)] dark:border-surface-200 lg:border-0 !z-[11]">
+            <div class="max-w-[calc(100%-110px)] mr-auto">
+              <a
+                class="imbox-message-header inline-flex items-center text-sm font-bold leading-[120%] text-ellipsis overflow-hidden hover:underline">
+                <span :class="getMsgIcon(item.type)" class="mr-1"></span>
+                <span>{{ item.title }}</span>
+              </a>
 
-                <div
-                  class="text-xs whitespace-nowrap text-ellipsis overflow-hidden"
-                  v-html="getMsgContent(item)">
-                </div>
+              <div
+                class="text-xs whitespace-nowrap text-ellipsis overflow-hidden"
+                v-html="getMsgContent(item)">
               </div>
-              <div 
-                class="flex flex-col items-end">
-                <div class="text-xs mb-1"
-                  v-html="getMsgDate(item)">
-                </div>
-                <Button 
-                  v-if="item.last_message && item.last_message.user.id == 42 && !item.last_message.is_viewed"
-                  @click.stop="setViewed(item.last_message.id)"
-                  icon="pi pi-check-circle" 
-                  aria-label="Отметить прочитанным" 
-                  :pt="{ root: '!p-1 !w-auto rounded' }"
-                  :ptOptions="{ mergeProps: true }"
-                />             
+            </div>
+            <div 
+              class="flex flex-col items-end">
+              <div class="text-xs mb-1"
+                v-html="getMsgDate(item)">
               </div>
-            </div>          
+              <Button 
+                v-if="item.last_message && item.last_message.user.id == 42 && !item.last_message.is_viewed"
+                @click.stop="setViewed(item.last_message.id)"
+                icon="pi pi-check-circle" 
+                aria-label="Отметить прочитанным" 
+                :pt="{ root: '!p-1 !w-auto rounded' }"
+                :ptOptions="{ mergeProps: true }"
+              />             
+            </div>
+          </div>          
 
-          </div>
-        </template>
+        </div>
+      </template>
     </VirtualScroller>
 
   </div>

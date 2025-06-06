@@ -342,6 +342,7 @@
     --text: rgb(0, 0, 0);
     --text-white: var(--p-surface-50);
     --accent-bg: #315764;
+    --contact-hover: var(--p-surface-200);
 
 }
 

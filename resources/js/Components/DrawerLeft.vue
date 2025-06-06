@@ -10,6 +10,13 @@
     const emit = defineEmits(['open-user-chat','open-group-chat']);
 
     const mode = ref('user');
+    const headerText = computed(() => {
+        if (mode.value == 'user') {
+            return 'Новый чат';
+        } else if (mode.value == 'group') {
+            return 'Добавление участников группы';
+        }
+    })
 
     const closeDrawer = () => {
         store.isMenuOpen = false;
@@ -57,34 +64,37 @@
         v-model:visible="store.isMenuOpen"
         :showCloseIcon = "false"
         class="h-full bg-[var(--body)] text-[var(--text)] w-full lg:w-[30%]"        
-        pt:header:class="p-[10px] bg-accent-bg"
-        pt:content:class="px-[10px] pt-[10px]"
+        pt:header:class="flex items-center p-[10px] text-text-white bg-accent-bg"
+        pt:content:class="flex flex-col h-[calc(100%-60px)] px-[10px] pt-[10px]"
     >
         <template #header>
             <button 
                 @click="closeDrawer"
                 class="flex items-center justify-center w-[40px] h-[40px] cursor-pointer"
             >
-                <span class="pi pi-arrow-left text-xl text-text-white"></span>
+                <span class="pi pi-arrow-left text-xl"></span>
             </button>
-        </template>        
+            <div>{{ headerText }}</div>
+        </template> 
+
         <!-- Чат с пользователем -->
         <template v-if="mode == 'user'">
-            <UserChatCreate
-                @open-user-chat="(...args) => openUserChat(...args)"
-                ref="UserChatCreateRef"
-            />
             <div @click="mode = 'group'">
-                <div class="flex items-center p-[10px] mt-[20px] cursor-pointer hover:bg-[var(--p-surface-200)]">
+                <div class="flex items-center mb-[10px] p-[10px] cursor-pointer hover:bg-[var(--p-surface-100)]">
                     <i class="pi pi-users mr-4 text-xl"></i>
                     <span>Новая группа</span>
                 </div>
             </div>
+            <UserChatCreate
+                @open-user-chat="(...args) => openUserChat(...args)"
+                ref="UserChatCreateRef"
+            />
         </template>
+
         <!-- Группа -->
-        <template v-if="mode == 'group'">
+        <template v-if="mode == 'group'" class="h-full">
             <GroupFull
-             ref="chatGroupRef"
+                ref="chatGroupRef"
             ></GroupFull>
             <Button
                 @click.stop.prevent="newGroup"
@@ -96,7 +106,11 @@
             </Button>       
         </template>
 
-
     </Drawer>
 </template>
         
+
+<style>
+
+
+</style>
