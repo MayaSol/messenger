@@ -32,13 +32,13 @@
     // Создание группы
     const chatGroupRef = ref(null);
     const saving = ref(false);
-    const readyToSave = computed(() => {
-        if (chatGroupRef.value && chatGroupRef.value.readyToSave()) {
-            return true;
-        } else {
-            return false;
-        }
-    });
+    const isReadyToSave = ref(false);
+
+    const changeReadyToSave = (val) => {
+        console.log('[DrawerLeft] changeReadyToSave val', val);
+        isReadyToSave.value = val;
+    }
+
     const newGroup = async () => {
         if (chatGroupRef.value) {
                 saving.value = true;
@@ -95,11 +95,14 @@
         <template v-if="mode == 'group'" class="h-full">
             <GroupFull
                 ref="chatGroupRef"
+                @ready-change="(val) => changeReadyToSave(val)"
             ></GroupFull>
+            <div class="test saving">{{ saving }}</div>
+            <div class="test ready-to-save">{{ isReadyToSave }}</div>
             <Button
                 @click.stop.prevent="newGroup"
                 title="Создать"
-                :disabled="saving || !readyToSave"
+                :disabled="saving || !isReadyToSave"
                 class="bg-emerald-400 hover:enabled:!bg-emerald-700 h-[var(--modal-header-height)] text-white border-0 flex items-center justify-center p-1 px-2"
             >
                 <p>Создать</p>

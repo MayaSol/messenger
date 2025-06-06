@@ -8,6 +8,7 @@
   import { useMainStore } from '@/stores/main.js';
   import { event } from "@primeuix/themes/aura/timeline";
   const store = useMainStore();
+  const emit = defineEmits(['ready-change']);
 
   const saving = ref(false);
   const errors = ref([]);
@@ -34,10 +35,13 @@
   //   ? listsStore.usersWithRolesList.filter(user => user.id != me.id )
   //   : []
   // );
+
   const allUsers = computed(() => store.lists.users
     ? store.lists.users.filter(user => user.id != store.lists.me.id )
     : []
   );
+
+
   const setGroupData = () => {
     if (!props.room)  {
       // Новая группа
@@ -59,6 +63,7 @@
   }
 
   const newGroup = async () => {
+    //!!! group.value.users - добавить в неё selectedUsers + me.id
     //!!! const response = await createGroupChat(group.value.title,group.value.users.map(user => user.id),me.id);
     // if (response.success) {
     //   // Добавляем первое сообщение
@@ -88,14 +93,15 @@
     // return response;
   }
 
-  const readyToSave = () => {
-    if (group.value.users && group.value.users.length > 1 && group.value.title && group.value.title.length > 0) {
-      return true;
-    }
-    else {
-      return false;
-    }
-  }
+  const isReadyToSave = computed(() => {
+    console.log('[GroupFull] isReadyToSave COMPUTED isReadyToSave ', selectedUsers.value && selectedUsers.value.length > 0 && group.value.title && group.value.title.length > 0);
+    return !!(selectedUsers.value && selectedUsers.value.length > 0 && group.value.title && group.value.title.length > 0)
+  })
+
+  watch(isReadyToSave, (newValue) => {
+    console.log('[GroupFull] newValue',newValue);
+    emit('ready-change',newValue)
+  },{immediate: true})
 
   const availableUsers = computed(() => {
     if (Object.keys(group.value).length == 0) return [];
@@ -106,11 +112,11 @@
   });
 
 
-  const addParticipant = () => {
-    if (!group.value.users) group.value.users = [];
-    group.value.users.push(...selectedUsers.value);
-    selectedUsers.value = null;
-  };
+  // const addParticipant = () => {
+  //   if (!group.value.users) group.value.users = [];
+  //   group.value.users.push(...selectedUsers.value);
+  //   selectedUsers.value = null;
+  // };
 
 
   const removeParticipant = (userId) => {
@@ -156,7 +162,6 @@
   defineExpose({
     newGroup,
     updateGroup,
-    readyToSave,
     isGroupChanged,
     isOwner,
   });
