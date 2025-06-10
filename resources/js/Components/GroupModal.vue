@@ -1,7 +1,7 @@
 <script setup>
 import ptFieldsetDealModal from "@/assets/presets/custom/fieldsetDealModal.js";
 // import GroupFull from "@/components/Common/GroupFull.vue";
-import { fetchUsers } from "@/services/api/imboxService.js";
+import { fetchUsers } from "@/services/api/commonService.js";
 
 const dialogRef = inject("dialogRef");
 const saving = ref(false);

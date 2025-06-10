@@ -513,7 +513,7 @@
   import 'vue3-emoji-picker/css';
   //!!! import { fetchMessages, fetchDeal, createMessage, fetchFile  } from '@/services/api/chatWorkServices.js';
   import { fetchMessages  } from '@/services/chatService.js';
-  //!!! import { setImboxMessageViewed } from '@/services/api/imboxServices.js';
+  //!!! import { setImboxMessageViewed } from '@/services/api/commonServices.js';
   import throttle from "lodash.throttle";
   import { dateFormat } from '@/utils/date-functions.js';
   

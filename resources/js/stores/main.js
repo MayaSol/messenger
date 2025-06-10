@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { fetchLists } from "@/services/imboxService.js";
+import { fetchLists } from "@/services/commonService.js";
 
 export const useMainStore = defineStore(
     'main', {
@@ -19,9 +19,7 @@ export const useMainStore = defineStore(
         actions: {
 
             async getLists() {
-                console.log('[main.js] getLists start');
                 const response = await fetchLists();
-                console.log('[main.js] getLists response',response);
                 if (response.success) {
                     this.lists.users = response.data;
                 }     

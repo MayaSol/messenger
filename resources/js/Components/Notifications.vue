@@ -5,8 +5,8 @@
   import { scrollToSmoothly  } from "../utils/scroll";
 
   // import { page } from '@/services/fakedata/imboxPageData.js';
-  // import { fetchMessages, setImboxMessageViewed } from '@/services/api/imboxServices.js';
-  // import { fetchUser } from "~/services/api/usersServices.js";
+  // import { fetchMessages, setImboxMessageViewed } from '@/services/api/commonServices.js';
+  // import { fetchUser } from "~/services/usersServices.js";
   //!!!
   import { fetchRooms } from '@/services/roomService.js';
   //!!!

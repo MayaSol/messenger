@@ -1,6 +1,6 @@
 <script setup>
   import { ref, onMounted, watch } from "vue";
-  // import { fetchUser } from "~/services/api/usersServices.js";
+  import { fetchUser } from "@/services/usersServices.js";
   import { useMainStore } from '@/stores/main.js';
   const store = useMainStore();
 
@@ -9,10 +9,10 @@
   const loading = ref(false);
 
   const setUser = async (userId) => {
-    //!!! const response = await fetchUser(userId);
-    // if (response.success) {
-    //   user.value = response.data;
-    // }
+    const response = await fetchUser(userId);
+    if (response.success) {
+      user.value = response.data;
+    }
     loading.value = false;
   };
 
@@ -20,7 +20,7 @@
     loading.value=true;
     const roomParts = room.split("__");
     const [user1, user2] = roomParts[1].split("_");
-    if (Object.keys(store.lists.me).length == 0) 
+    // if (Object.keys(store.lists.me).length == 0) 
     if (user1 == store.lists.me.id) {
       await setUser(user2);
     } else {
@@ -29,6 +29,7 @@
   };
 
   onMounted(() => {
+      console.log('[UserInfo] onMounted');
       setUserData(props.room);
   })
 

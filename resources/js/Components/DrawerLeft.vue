@@ -97,8 +97,6 @@
                 ref="chatGroupRef"
                 @ready-change="(val) => changeReadyToSave(val)"
             ></GroupFull>
-            <div class="test saving">{{ saving }}</div>
-            <div class="test ready-to-save">{{ isReadyToSave }}</div>
             <Button
                 @click.stop.prevent="newGroup"
                 title="Создать"

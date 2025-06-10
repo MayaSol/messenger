@@ -2,7 +2,7 @@
   import { ref, computed, onMounted, watch } from "vue";
   import ptFieldsetDealModal from "@/assets/presets/custom/fieldsetDealModal.js";
   import VSelect from '@/Components/Form/VSelect.vue';
-  //!!! import { fetchUsers, createGroupChat, updateGroupChat, fetchGroupInfo } from "@/services/api/imboxServices.js";
+  //!!! import { fetchUsers, createGroupChat, updateGroupChat, fetchGroupInfo } from "@/services/api/commonServices.js";
   //!!! import { createMessage  } from '@/services/api/chatWorkServices.js';
 
   import { useMainStore } from '@/stores/main.js';
