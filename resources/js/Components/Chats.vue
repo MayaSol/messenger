@@ -67,9 +67,7 @@ const emitLastMessage = (lastMessage) => {
       @click="msgTabActive = 'user_info'"
       v-if="imboxActive.type == 'user'"
       class="flex items-center justify-center grow text-center px-2 py-3 font-medium text-surface-100 bg-accent-bg border-b-2 cursor-pointer"
-      :class="
-        msgTabActive == 'user_info' ? 'border-surface-50' : 'border-transparent'
-      "
+      :class="msgTabActive == 'user_info' ? 'border-surface-50' : 'border-transparent'"
     >
       <span>Инфо</span>
     </button>

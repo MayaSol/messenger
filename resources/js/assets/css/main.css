@@ -60,7 +60,7 @@
 
 @layer components {
     .chat__bg {
-        background-image: url("/images/chat_work_bg.svg"), linear-gradient(136deg, rgb(229, 255, 244) 0%, rgb(180, 222, 200) 55.21%, rgb(224, 255, 242) 100%), none;
+        background-image: url("/images/chat_work_bg.svg");
     }
 
     .chat__bg--discussion {
@@ -82,12 +82,13 @@
         border-radius: 4px;
         background-color: #fff;
         color: #26292b;
+        box-shadow: 0 1px .5px rgba(11,20,26,.13);
     }
 
-    /* .chat-work__msg--me {
-        background-color: #55AEF6;
-        color: #fff;
-    } */
+    .chat-work__msg--me {
+        background-color: rgb(217, 253, 211);
+        color: rgb(10, 10, 10);
+    }
 
     .chat-work__msg--client {
         background-color: #d9fdd3;
@@ -116,10 +117,10 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 28px;
+        height: 20px;
         border-radius: 80px;
-        font-size: 13px;
-        box-shadow: 0 1px 1px #26292b1a;
+        font-size: 12px;
+        box-shadow: rgba(0, 0, 0, 0.06) 0px 0px 1px 1px, rgba(0, 0, 0, 0.05) 0px 1px 0px 0px;
     }
 
     .chat-feed__entity--event i {
@@ -221,11 +222,13 @@
   color: gray;
 }
 
+
+
+
 @font-face {
-  font-family: "Montserrat";
-  src: url("../fonts/Montserrat-Light.woff2") format("woff2"),
-      url("../fonts/Montserrat-Light.woff") format("woff");
-  font-weight: 300;
+  font-family: "NimbusSanLBol";
+  src: url("../fonts/NimbusSanLBol.woff") format("woff");
+  font-weight: 700;
   font-style: normal;
 }
 
@@ -341,7 +344,7 @@
     --body: rgb(249, 250, 251); /*Основной фон*/
     --text: rgb(0, 0, 0);
     --text-white: var(--p-surface-50);
-    --accent-bg: #315764;
+    --accent-bg: #075e55;
     --contact-hover: var(--p-surface-200);
 
 }

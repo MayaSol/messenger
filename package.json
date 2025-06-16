@@ -31,6 +31,7 @@
         "qs": "^6.14.0",
         "tailwindcss-primeui": "^0.6.1",
         "vue-select": "^4.0.0-beta.6",
-        "vue3-emoji-picker": "^1.1.8"
+        "vue3-emoji-picker": "^1.1.8",
+        "wavesurfer.js": "^7.9.5"
     }
 }

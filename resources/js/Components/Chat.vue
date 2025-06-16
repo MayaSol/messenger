@@ -1,148 +1,169 @@
 <template>
-  <div
-    id="chat"
-    ref="chatRef"
-    class="w-full h-full relative flex flex-col h-section"
-    :class="propClass"
-  >
-    <div 
-      v-if="messagesNotViewed.length > 0"
-      @click="scrollChatBody"
+  <div id="chat" ref="chatRef" class="w-full relative grow flex flex-col h-section" :class="propClass">
+    <div v-if="messagesNotViewed.length > 0" @click="scrollChatBody"
       class="unviewed absolute w-8 h-8 right-4 bottom-[50px] bg-[var(--p-surface-200)] hover:bg-[var(--p-surface-100)] rounded-full flex items-center justify-center z-[10] cursor-pointer transition-[background-color] transition-300">
       <i class="pi pi-chevron-down text-[var(--p-surface-500)]"></i>
-      <i class="absolute flex items-center justify-center w-5 h-5 bg-emerald-500 rounded-full -right-1 -bottom-1 text-white text-sm">
+      <i
+        class="absolute flex items-center justify-center w-5 h-5 bg-emerald-500 rounded-full -right-1 -bottom-1 text-white text-sm">
         <span class="px-1">{{ messagesNotViewed.length }}</span>
       </i>
     </div>
-    <!-- Header -->
-    <div class="p-2 bg-surface-0 dark:bg-surface-600 flex flex-row justify-between items-center gap-[10px]">
-      <AvatarGroup class="">
-        <template v-for="user in users">
-          <Avatar
-            v-tooltip.bottom="user.info.name"
-            :label="user.info.name.replace(/[^a-zа-яё]/gi, '').slice(0, 3)"
-            shape="circle"
-            class="text-[10px] hover:z-50"
-          />
-        </template>
-      </AvatarGroup>
-      <!-- <button
-         v-if="subscriptionId && !contacts"
-        @click="unsubscribe"
-        class="descriptions-unsubscribe min-w-[115px] py-1 bg-[#D9D9D9]"
-      >
-        Отписаться
-      </button> -->
-      <!-- <div class="relative grow">
-        <Select
-          v-if="contactList && contactList.length > 0"
-          class="custom-v-select"
-          v-model="contactActiveId"
-          id="contacts"
-          :options="contactList"
-          optionValue="id"
-          optionLabel="name"
-        />
-        <ProgressSpinner
-          v-if="loadingChat"
-          :pt="{
-            root: 'absolute left-[3px] right-[3px] top-[3px] bottom-[3px] bg-white',
-          }"
-        />
-      </div> -->
-      <div class="search-wrapper relative w-full">
-        <InputText
-          @input="onInputSearch"
-          type="text"
-          placeholder="Поиск"
-          class="!py-[5px] rounded-none text-[15px] border-search-border focus:ring-4 focus:ring-input-focus-ring focus:ring-opacity-50 focus:!border-search-border"
-          style="height: 32px"
-          ref="searchRef"
-        />
-        <ProgressSpinner
-            v-if="loadingSearch || loadingSearchDelayMin || loadingChat"
-            :pt="{
-              root: 'absolute left-[3px] right-[3px] top-[3px] bottom-[3px] bg-transparent h-auto w-auto',
-            }"
-          />
-      </div>
-    </div>
 
     <!-- Messages -->
-    <div
-      ref="chatBodyRef"
-      @dragover.prevent
-      @dragenter.prevent
-      @drop="drop($event)"
-      class="chat__bg relative flex flex-col flex-1 overflow-auto dark:bg-surface-950 bg-[#dad3cc]"
-      :class="type == 'discussion' ? 'chat__bg--discussion' : ''"
-    >
+    <div ref="chatBodyRef" @dragover.prevent @dragenter.prevent @drop="drop($event)"
+      class="chat__bg relative flex flex-col flex-1 overflow-auto dark:bg-surface-950 bg-[#F5F1EB]"
+      :class="type == 'discussion' ? 'chat__bg--discussion' : ''">
 
       <div class="preloader w-full h-full relative px-[12px]"
         v-if="!isMounted || loadingSearchDelayMin || loadingSearch || loadingChat">
         <div class="flex justify-center">
-          <Skeleton width="100px" height="28px" class="mt-[24px] mb-[10px] bg-[#ffffff]"/>
+          <Skeleton width="100px" height="28px" class="mt-[24px] mb-[10px] bg-[#ffffff]" />
         </div>
         <div class="flex">
-          <Skeleton width="88px" height="69px" class="ml-auto mb-2 bg-[#ffffff]"/>
+          <Skeleton width="88px" height="69px" class="ml-auto mb-2 bg-[#ffffff]" />
         </div>
         <div class="flex">
-          <Skeleton width="120px" height="40px" class="ml-auto mb-2 bg-[#ffffff]"/>
+          <Skeleton width="120px" height="40px" class="ml-auto mb-2 bg-[#ffffff]" />
         </div>
         <div class="flex">
-          <Skeleton width="180px" height="69px" class="mr-auto mb-2 bg-[#ffffff]"/>
+          <Skeleton width="180px" height="69px" class="mr-auto mb-2 bg-[#ffffff]" />
         </div>
         <!-- <div class="absolute w-[80px] h-[80px] top-[50%] left-[50%] -translate-y-1/2 -translate-x-1/2">
           <div class="w-full h-full rounded-full border-8 border-[#e5e5e5] border-t-transparent animate-spin"></div>
         </div> -->
       </div>
 
-      <div class="chat__scroll-observer h-4" ref="scrollObserverRef" ></div>
+      <!---->
 
-      <div
-        v-if="isMounted"
-        v-show="!loadingSearchDelayMin && !loadingSearch && !loadingChat"
-        ref="chatContent"
+
+      <!-- Input -->
+      <div class="w-full absolute bottom-0 z-[10]">
+        <div class="flex mb-[10px] mx-[12px] rounded-md overflow-hidden">
+          <!-- <div class="chat-input relative flex grow mr-[6px] px-[10px] pt-[2px] items-center text-surface-700 dark:text-surface-0 cursor-pointer dark:bg-surface-600 bg-[#fff]" contenteditable="true"
+              @input="handleInput"
+              @keydown="() => console.log('keydown')" 
+              @keyup="() => console.log('keyup')" 
+              @blur="console.log('blur')"     
+              @focus="() => {setTimeout(() => editable.focus(), 10);}"       
+              ref="chatInput"                
+            >           -->
+
+          <!-- Текст сообщения -->
+          <div
+            class="chat-input relative grow mr-[6px] px-[10px] py-[12px] text-sm leading-[18px] text-surface-700 dark:text-surface-0 cursor-pointer dark:bg-surface-600 bg-[#fff]"
+            contenteditable="true" @input="handleInput" @keydown="() => console.log('keydown')"
+            @keyup="() => console.log('keyup')" @blur="console.log('blur')" ref="chatInput">
+
+
+            <!-- Уголок -->
+            <div class="chat-message-angle absolute top-0 right-0 translate-x-full">
+              <span aria-hidden="true" data-icon="tail-out" class="_amk7">
+                <svg viewBox="0 0 8 13" height="13" width="8" preserveAspectRatio="xMidYMid meet" class="" version="1.1"
+                  x="0px" y="0px" enable-background="new 0 0 8 13">
+                  <title>tail-out</title>
+                  <path opacity="0.13" d="M5.188,1H0v11.193l6.467-8.625 C7.526,2.156,6.958,1,5.188,1z"></path>
+                  <path fill="#fff" d="M5.188,0H0v11.193l6.467-8.625C7.526,1.156,6.958,0,5.188,0z"></path>
+                </svg>
+              </span>
+            </div>
+
+            <!-- <audio class="hidden" ref="audiosRefs"></audio> -->
+
+          </div>
+
+
+
+          <!-- Микрофон             -->
+          <div class="vac-box-footer flex items-center justify-center w-[42px] h-[42px] shrink-0"
+            :class="[{ 'vac-box-footer-border': !audioFiles.length }, {  '!w-auto': isRecording}]">
+
+            <div v-if="showAudio && !audioFiles.length" class="vac-icon-textarea-right h-full rounded-md">
+              <template v-if="isRecording">
+                <div class="vac-svg-button vac-icon-audio-stop cursor-pointer" @click="toggleRecorder(false)">
+                  <svg viewBox="0 0 24 25" height="25" width="24" preserveAspectRatio="xMidYMid meet" class="x1n2onr6">
+                    <path d="M7 21.5C6.45 21.5 5.97917 21.3042 5.5875 20.9125C5.19583 20.5208 5 20.05 5 19.5V6.5C4.71667 6.5 4.47917 6.40417 4.2875 6.2125C4.09583 6.02083 4 5.78333 4 5.5C4 5.21667 4.09583 4.97917 4.2875 4.7875C4.47917 4.59583 4.71667 4.5 5 4.5H9C9 4.21667 9.09583 3.97917 9.2875 3.7875C9.47917 3.59583 9.71667 3.5 10 3.5H14C14.2833 3.5 14.5208 3.59583 14.7125 3.7875C14.9042 3.97917 15 4.21667 15 4.5H19C19.2833 4.5 19.5208 4.59583 19.7125 4.7875C19.9042 4.97917 20 5.21667 20 5.5C20 5.78333 19.9042 6.02083 19.7125 6.2125C19.5208 6.40417 19.2833 6.5 19 6.5V19.5C19 20.05 18.8042 20.5208 18.4125 20.9125C18.0208 21.3042 17.55 21.5 17 21.5H7ZM17 6.5H7V19.5H17V6.5ZM10 17.5C10.2833 17.5 10.5208 17.4042 10.7125 17.2125C10.9042 17.0208 11 16.7833 11 16.5V9.5C11 9.21667 10.9042 8.97917 10.7125 8.7875C10.5208 8.59583 10.2833 8.5 10 8.5C9.71667 8.5 9.47917 8.59583 9.2875 8.7875C9.09583 8.97917 9 9.21667 9 9.5V16.5C9 16.7833 9.09583 17.0208 9.2875 17.2125C9.47917 17.4042 9.71667 17.5 10 17.5ZM14 17.5C14.2833 17.5 14.5208 17.4042 14.7125 17.2125C14.9042 17.0208 15 16.7833 15 16.5V9.5C15 9.21667 14.9042 8.97917 14.7125 8.7875C14.5208 8.59583 14.2833 8.5 14 8.5C13.7167 8.5 13.4792 8.59583 13.2875 8.7875C13.0958 8.97917 13 9.21667 13 9.5V16.5C13 16.7833 13.0958 17.0208 13.2875 17.2125C13.4792 17.4042 13.7167 17.5 14 17.5Z" fill="currentColor"></path>
+                  </svg>
+                </div>
+
+                <div class="vac-dot-audio-record" />
+
+                <div class="vac-dot-audio-record-time">
+                  {{ recordedTime }}
+                </div>
+
+              </template>
+
+              <div v-else class="vac-svg-button" @click="toggleRecorder(true)">
+                <slot name="microphone-icon">
+                  <svg-icon name="microphone" class="vac-icon-microphone" />
+                </slot>
+              </div>
+            </div>
+
+            <button @click="toggleRecorder(true)"
+              class="audio-start-record h-full flex items-center justify-center w-[42px] shriink-0 bg-accent-bg rounded-full cursor-pointer"
+              tabindex="0" data-tab="11" type="button" aria-label="Голосовое сообщение">
+
+              <span v-if="!isRecording" aria-hidden="true" data-icon="mic-outlined" class="">
+                <svg viewBox="0 0 24 24" width="24" preserveAspectRatio="xMidYMid meet" class="">
+                  <path
+                    d="M12 14C11.1667 14 10.4583 13.7083 9.875 13.125C9.29167 12.5417 9 11.8333 9 11V5C9 4.16667 9.29167 3.45833 9.875 2.875C10.4583 2.29167 11.1667 2 12 2C12.8333 2 13.5417 2.29167 14.125 2.875C14.7083 3.45833 15 4.16667 15 5V11C15 11.8333 14.7083 12.5417 14.125 13.125C13.5417 13.7083 12.8333 14 12 14ZM12 21C11.4477 21 11 20.5523 11 20V17.925C9.26667 17.6917 7.83333 16.9167 6.7 15.6C5.78727 14.5396 5.24207 13.3387 5.06441 11.9973C4.9919 11.4498 5.44772 11 6 11C6.55228 11 6.98782 11.4518 7.0905 11.9945C7.27271 12.9574 7.73004 13.805 8.4625 14.5375C9.4375 15.5125 10.6167 16 12 16C13.3833 16 14.5625 15.5125 15.5375 14.5375C16.27 13.805 16.7273 12.9574 16.9095 11.9945C17.0122 11.4518 17.4477 11 18 11C18.5523 11 19.0081 11.4498 18.9356 11.9973C18.7579 13.3387 18.2127 14.5396 17.3 15.6C16.1667 16.9167 14.7333 17.6917 13 17.925V20C13 20.5523 12.5523 21 12 21ZM12 12C12.2833 12 12.5208 11.9042 12.7125 11.7125C12.9042 11.5208 13 11.2833 13 11V5C13 4.71667 12.9042 4.47917 12.7125 4.2875C12.5208 4.09583 12.2833 4 12 4C11.7167 4 11.4792 4.09583 11.2875 4.2875C11.0958 4.47917 11 4.71667 11 5V11C11 11.2833 11.0958 11.5208 11.2875 11.7125C11.4792 11.9042 11.7167 12 12 12Z"
+                    fill="#fff">
+                  </path>
+                </svg>
+              </span>
+
+              <span v-if="isRecording" aria-hidden="true" data-icon="mic-outlined" class="">
+                <svg viewBox="0 0 24 24" height="24" width="24" preserveAspectRatio="xMidYMid meet" class=""
+                  fill="none">
+                  <path
+                    d="M5.4 19.425C5.06667 19.5583 4.75 19.5291 4.45 19.3375C4.15 19.1458 4 18.8666 4 18.5V14L12 12L4 9.99997V5.49997C4 5.1333 4.15 4.85414 4.45 4.66247C4.75 4.4708 5.06667 4.44164 5.4 4.57497L20.8 11.075C21.2167 11.2583 21.425 11.5666 21.425 12C21.425 12.4333 21.2167 12.7416 20.8 12.925L5.4 19.425Z"
+                    fill="#fff"></path>
+                </svg>
+              </span>
+
+            </button>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!---->
+
+      <div class="chat__scroll-observer h-4" ref="scrollObserverRef"></div>
+
+      <div v-if="isMounted" v-show="!loadingSearchDelayMin && !loadingSearch && !loadingChat" ref="chatContent"
         class="chat__content relative py-2 flex flex-col grow">
 
 
-        <div class="chat__date-title px-3 mx-auto text-surface-600 dark:text-surface-100 bg-[#ffffff80]"
-              v-if="isEmpty">
-                Нет сообщений
+        <div class="chat__date-title px-3 mx-auto text-surface-600 dark:text-surface-100 bg-[#ffffff80]" v-if="isEmpty">
+          Нет сообщений
         </div>
 
         <template v-for="(data, index) in filteredMessages" :key="index">
 
           <div class="chat__day">
             <div
-              class="chat__date sticky top-[10px] w-[100px] mx-auto mb-[10px] z-[10]"
-            >
-              <div class="chat__date-title text-surface-600 dark:text-surface-100 bg-[#ffffff80]">
-                {{ index }}
+              class="chat__date sticky top-[10px] w-[84px] mx-auto mb-[10px] z-[10] rounded-md bg-[rgba(255,255,255,0.9)]">
+              <div
+                class="chat__date-title text-[rgba(0,0,0,0.6)] font-[NimbusSanLBol] dark:text-surface-100 bg-[#ffffff80]">
+                <span class="mt-[2px]">{{ index }}</span>
               </div>
             </div>
 
-            <template v-for="message in filteredMessages[index]"
-              :key="message.id">
+            <template v-for="message in filteredMessages[index]" :key="message.id">
 
               <div
                 class="chat__msg-wrapper flex px-3 mb-2 relative before:absolute before:inset-0 before:bg-[#B4D1E8] before:opacity-0 before:transition-opacity before:duration-500"
                 :class="(message.user && message.user.id && message.user.id === store.lists.me.id) ? 'justify-end' : 'justify-start'"
-                :data-id="message.id"
-              >
-                <div
-                  class="chat__msg chat-work__msg group relative overflow-hidden"
-                  :class="
+                :data-id="message.id">
+                <div class="chat__msg chat-work__msg group relative overflow-hidden" :class="
                     (message.user && message.user.id && message.user.id === store.lists.me.id) ? 'chat-work__msg--me' :
                     (message.user && message.user.id && message.user.id === 42) ? 'chat-work__msg--client' : ''
-                  "
-                  >
-                  <a
-                    href=""
-                    class="chat-work__msg-user"
-                    v-if="message.user && !message.sameUser"
-                  >
-                  {{ message.user.name }}
+                  ">
+                  <a href="" class="chat-work__msg-user" v-if="message.user && !message.sameUser">
+                    {{ message.user.name }}
                     <!-- {{ message.user.id === 42 ? customer_name : message.user.name }} -->
                   </a>
                   <!--  -->
@@ -150,34 +171,27 @@
                     class="pl-[10px] text-sm leading-[130%] border-l-2 border-solid border-[#fffff]">
                     {{message.reply_to && message.reply_to.user.name}}
                     <div class="whitespace-nowrap text-ellipsis overflow-hidden"
-                    @click="(event) => repliedMsgClick(event, message.reply_to)">
-                      <div v-if="message.text"
-                        class="cursor-pointer"
-                      >
+                      @click="(event) => repliedMsgClick(event, message.reply_to)">
+                      <div v-if="message.text" class="cursor-pointer">
                         {{message.reply_to && message.reply_to.text}}
                       </div>
                       <div v-if="!message.reply_to.text && message.reply_to.file">Прикреплен файл</div>
                     </div>
                   </div>
-                    <!-- Изображение -->
-                    <div v-if="message.file && message.file.mime.includes('image')" ref='imagesWrappers' 
-                      :style="getImageStyle(message.file)" class="bg-[#eee]">
-                      <a
-                        :data-lg-size="`${message.file.dimensions[0]}-${message.file.dimensions[1]}`"
-                        class="gallery-item block w-full h-full cursor-pointer"
-                        :data-thumb="message.file.thumb ? `${apiBase}/chat/${message.file.thumb}` : `${apiBase}/chat/${message.file.url}`"
-                        :data-src="`${apiBase}/chat/${message.file.url}`"
-                        @click="galleryRef.launch($event, message.id)"
-                      >
-                        <img 
-                          :data-src="message.file.thumb ? `${apiBase}/chat/${message.file.thumb}` : `${apiBase}/chat/${message.file.url}`" 
-                          alt="" 
-                          ref="imagesRefs"
-                          class="w-full h-full object-cover" />
-                      </a>
-                    </div>
-                    <!-- Аудио -->
-                    <!-- <audio
+                  <!-- Изображение -->
+                  <div v-if="message.file && message.file.mime.includes('image')" ref='imagesWrappers'
+                    :style="getImageStyle(message.file)" class="bg-[#eee]">
+                    <a :data-lg-size="`${message.file.dimensions[0]}-${message.file.dimensions[1]}`"
+                      class="gallery-item block w-full h-full cursor-pointer"
+                      :data-thumb="message.file.thumb ? `${apiBase}/chat/${message.file.thumb}` : `${apiBase}/chat/${message.file.url}`"
+                      :data-src="`${apiBase}/chat/${message.file.url}`" @click="galleryRef.launch($event, message.id)">
+                      <img
+                        :data-src="message.file.thumb ? `${apiBase}/chat/${message.file.thumb}` : `${apiBase}/chat/${message.file.url}`"
+                        alt="" ref="imagesRefs" class="w-full h-full object-cover" />
+                    </a>
+                  </div>
+                  <!-- Аудио -->
+                  <!-- <audio
                       controls
                       v-if="message.file && message.file.mime.includes('audio')"
                     >
@@ -187,8 +201,8 @@
                       />
                       Ваш браузер не поддерживает аудио элемент.
                     </audio> -->
-                    <!-- Файлы pdf -->
-                    <!-- <a`
+                  <!-- Файлы pdf -->
+                  <!-- <a`
                       class="flex"
                       :href="`${apiBase}/chat/${message.file.url}`"
                       :target="'_blank'"
@@ -206,47 +220,36 @@
                         {{ message.file.name }}
                       </span>
                     </a>                       -->
-                    <!-- Другие файлы -->
-                    <a
-                      class="flex cursor-pointer relative"
-                      :href="`${apiBase}/chat/${message.file.url}`"
-                      :target="['application/pdf','text/plain'].includes(message.file.mime) ? '_blank' : ''"
-                      v-if="message.file &&
+                  <!-- Другие файлы -->
+                  <a class="flex cursor-pointer relative" :href="`${apiBase}/chat/${message.file.url}`"
+                    :target="['application/pdf','text/plain'].includes(message.file.mime) ? '_blank' : ''" v-if="message.file &&
                         !message.file.mime.includes('image') &&
                         !message.file.mime.includes('audio') && 
-                        !message.file.mime.includes('video')"                      
-                    >
-                      <img width="80" height="80"
-                        :src="`/images/filetypes/${getFileTypeIcon(message.file.name)}`"
-                        alt="file"
-                      >
-                      <span class="font-semibold pl-2 overflow-hidden break-words">
-                        {{ message.file.name }}
-                      </span>                        
-                    </a>
-                    <!-- Видео -->
-                    <div v-if="message.file && message.file.mime.includes('video')">
-
-                      <video
-                        width="280"
-                        controls
-                        preload="metadata"
-                      >
-                        <source :src="`${apiBase}/chat/${message.file.url}#t=0.1`" :type="message.file.mime">
-                      </video>                        
-
-                    </div>
-                    <!--Текст-->
-                    <span v-if="!message.file" class="break-words">
-                      {{ message.text }}
+                        !message.file.mime.includes('video')">
+                    <img width="80" height="80" :src="`/images/filetypes/${getFileTypeIcon(message.file.name)}`"
+                      alt="file">
+                    <span class="font-semibold pl-2 overflow-hidden break-words">
+                      {{ message.file.name }}
                     </span>
-                
+                  </a>
+                  <!-- Видео -->
+                  <div v-if="message.file && message.file.mime.includes('video')">
+
+                    <video width="280" controls preload="metadata">
+                      <source :src="`${apiBase}/chat/${message.file.url}#t=0.1`" :type="message.file.mime">
+                    </video>
+
+                  </div>
+                  <!--Текст-->
+                  <span v-if="!message.file" class="break-words">
+                    {{ message.text }}
+                  </span>
+
 
                   <span class="text-sm mt-1 text-right chat-work__created">
                     {{ dateFormat(message.created_at, true) }}
                   </span>
-                  <div
-                    @click="(e) => msgMenu(e,message)"
+                  <div @click="(e) => msgMenu(e,message)"
                     class=" chat__msg-menu-icon absolute w-5 h-5 top-1 right-1 flex items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 rounded bg-[#d5d5d5]">
                     <i class="pi pi-chevron-down"></i>
                   </div>
@@ -262,245 +265,46 @@
       </div>
     </div>
 
-    <div
-      v-if="showForm === 'reply'"
-      class="entity-feed-form-wrapper z-50">
-        <div class="entity-feed-form relative p-[10px] bg-white dark:bg-surface-600 rounded">
+    <div v-if="showForm === 'reply'" class="entity-feed-form-wrapper z-50">
+      <div class="entity-feed-form relative p-[10px] bg-white dark:bg-surface-600 rounded">
         <div @click="showForm = false; activeMessage = null;"
           class="group entity-feed-form__close absolute top-[5px] right-0 flex items-center justify-center w-6 h-6 text-[#92a3b4] rounded-full cursor-pointer">
-          <svg width="20"
-            height="20"
-            class="text-[#92a3b4] group-hover:text-[#343f4a]">
+          <svg width="20" height="20" class="text-[#92a3b4] group-hover:text-[#343f4a]">
             <use xlink:href="/images/sprite.svg#close" />
           </svg>
         </div>
-          <div class="flex items-center">
-            <i class="pi pi-reply mr-2 -scale-x-100 text-sm"></i>
-            <div class="overflow-hidden">
-              <div class="text-[15px] leading-[120%] text-[#42A5F5]">{{ activeMessage.user.name}}</div>
-              <div class="overflow-hidden text-ellipsis">{{ activeMessage.text}}</div>
-            </div>
+        <div class="flex items-center">
+          <i class="pi pi-reply mr-2 -scale-x-100 text-sm"></i>
+          <div class="overflow-hidden">
+            <div class="text-[15px] leading-[120%] text-[#42A5F5]">{{ activeMessage.user.name}}</div>
+            <div class="overflow-hidden text-ellipsis">{{ activeMessage.text}}</div>
           </div>
+        </div>
       </div>
     </div>
 
     <!--Upload File-->
-    <CommonUploadFileForm
-      :isShow="isShowFileForm"
-      :uploadRoute="'/messages/upload'"
-      :dealId="deal"
-      :room="room"
-      @close="closeFileForm"
-      @filesUploaded="filesUploaded"
-      ref="uploadFileFormRef"
-      :selectedPhone="selectedUser && selectedUser.phone"
-    />
+    <CommonUploadFileForm :isShow="isShowFileForm" :uploadRoute="'/messages/upload'" :dealId="deal" :room="room"
+      @close="closeFileForm" @filesUploaded="filesUploaded" ref="uploadFileFormRef"
+      :selectedPhone="selectedUser && selectedUser.phone" />
 
-    <!-- Input -->
-    <div class="chat-input flex px-1 pt-[2px] items-center text-surface-700 dark:text-surface-0 cursor-pointer dark:bg-surface-600">
-      <!--Отправить файл-->
-      <div class="chat-send-file p-1 cursor-pointer" @click="openFileForm">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          width="24"
-          height="24"
-        >
-          <path
-            fill="currentColor"
-            fill-opacity=".5"
-            d="M1.816 15.556v.002c0 1.502.584 2.912 1.646 3.972s2.472 1.647 3.974 1.647a5.58 5.58 0 0 0 3.972-1.645l9.547-9.548c.769-.768 1.147-1.767 1.058-2.817-.079-.968-.548-1.927-1.319-2.698-1.594-1.592-4.068-1.711-5.517-.262l-7.916 7.915c-.881.881-.792 2.25.214 3.261.959.958 2.423 1.053 3.263.215l5.511-5.512c.28-.28.267-.722.053-.936l-.244-.244c-.191-.191-.567-.349-.957.04l-5.506 5.506c-.18.18-.635.127-.976-.214-.098-.097-.576-.613-.213-.973l7.915-7.917c.818-.817 2.267-.699 3.23.262.5.501.802 1.1.849 1.685.051.573-.156 1.111-.589 1.543l-9.547 9.549a3.97 3.97 0 0 1-2.829 1.171 3.975 3.975 0 0 1-2.83-1.173 3.973 3.973 0 0 1-1.172-2.828c0-1.071.415-2.076 1.172-2.83l7.209-7.211c.157-.157.264-.579.028-.814L11.5 4.36a.572.572 0 0 0-.834.018l-7.205 7.207a5.577 5.577 0 0 0-1.645 3.971z"
-          ></path>
-        </svg>
-        <!-- <input
-          id="file-input"
-          ref="fileInput"
-          @change="
-            file = $event.target.files[0];
-            uploadFile();
-          "
-          style="display: none"
-          type="file"
-        /> -->
-      </div>
-
-      <!-- Текст сообщения -->
-      <div class="flex-1 relative !outline-0 text-[0]">
-        <span
-          class="recipient absolute top-2 left-2 bg-surface-300 dark:bg-surface-600 leading-tight rounded-sm"
-          :class="selectedUser ? 'px-1 pt-px pb-[3px]' : 'w-0'"
-          tabindex="0"
-          ref="userInputRef"
-          @click="openUserSelect"
-        >
-        </span>
-        <Textarea
-          class="w-full !p-2 lg:!p-2 text-base !leading-[22px] !outline-0 border-none"
-          placeholder="Введите сообщение"
-          autoResize
-          style="max-height: 300px;"
-          rows="1"
-          pt:root:id="message-input"
-          @paste="paste($event)"
-          @keydown.enter.exact.prevent="sendMessage"
-          @keydown.enter.shift.exact.prevent="newMessage += '\n'"
-          v-model="newMessage"
-          ref="newMessageTextareaRef"
-        />
-      </div>
-
-      <!-- Список пользователей -->
-      <button 
-        v-if="contactList.length > 0"  
-        class="recipient text-3xl leading-none font-medium text-[var(--p-surface-700)] w-[32px] h-[32px] rounded-sm opacity-50"
-        tabindex="0"
-        type="button"
-        label="@"
-        @click="openUserSelect"
-      >
-        <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
-          width="24px" height="24px" viewBox="0 0 441.164 441.164"
-          xml:space="preserve">
-        <g>
-          <path d="M220.582,441.164c6.903,0,12.5-5.597,12.5-12.5s-5.598-12.5-12.5-12.5c-104.27,0-189.099-87.738-189.099-195.582
-            S116.312,25,220.582,25s189.1,87.738,189.1,195.582c0,67.736-30.037,109.027-58.148,125.085
-            c-13.99,7.992-28.035,9.798-36.654,4.715c-8.775-5.177-10.477-16.616-10.354-25.303c0-0.058,0-0.115,0-0.173V106.163
-            c0-6.903-5.598-12.5-12.5-12.5s-12.5,5.597-12.5,12.5v37.494c-1.338-1.837-2.727-3.637-4.168-5.387
-            c-18.773-22.77-43.943-35.309-70.876-35.309c-26.932,0-52.103,12.54-70.876,35.309c-18.198,22.07-28.22,51.269-28.22,82.217
-            s10.021,60.146,28.22,82.217c18.773,22.771,43.944,35.31,70.876,35.31c26.933,0,52.103-12.541,70.876-35.31
-            c1.441-1.75,2.83-3.55,4.168-5.388v27.505c-0.277,21.592,7.766,38.314,22.654,47.096c16.574,9.774,39.662,8.078,61.754-4.542
-            c34.201-19.536,70.748-68.357,70.748-146.793c0-58.845-22.221-114.188-62.568-155.834C331.658,22.995,277.844,0,220.582,0
-            C163.318,0,109.504,22.995,69.053,64.748c-40.349,41.646-62.57,96.989-62.57,155.834c0,58.846,22.221,114.188,62.569,155.834
-            C109.504,418.169,163.318,441.164,220.582,441.164z M204.479,313.012c-40.856,0-74.096-41.507-74.096-92.525
-            c0-51.02,33.239-92.526,74.096-92.526c40.856,0,74.097,41.507,74.097,92.526C278.576,271.505,245.336,313.012,204.479,313.012z"/>
-        </g>
-        </svg>
-      </button>
-
-      <!-- Emoji picker -->
-      <div class="chat-emoji btn-wrapper relative" v-outside="() => {if (showForm == 'emoji') showForm = '' }">
-        <div class="p-1"
-          @click="showForm='emoji'">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            width="24"
-            height="24"
-          >
-            <path
-              opacity=".5"
-              fill="currentColor"
-              d="M9.153 11.603c.795 0 1.439-.879 1.439-1.962s-.644-1.962-1.439-1.962-1.439.879-1.439 1.962.644 1.962 1.439 1.962zm-3.204 1.362c-.026-.307-.131 5.218 6.063 5.551 6.066-.25 6.066-5.551 6.066-5.551-6.078 1.416-12.129 0-12.129 0zm11.363 1.108s-.669 1.959-5.051 1.959c-3.505 0-5.388-1.164-5.607-1.959 0 0 5.912 1.055 10.658 0zM11.804 1.011C5.609 1.011.978 6.033.978 12.228s4.826 10.761 11.021 10.761S23.02 18.423 23.02 12.228c.001-6.195-5.021-11.217-11.216-11.217zM12 21.354c-5.273 0-9.381-3.886-9.381-9.159s3.942-9.548 9.215-9.548 9.548 4.275 9.548 9.548c-.001 5.272-4.109 9.159-9.382 9.159zm3.108-9.751c.795 0 1.439-.879 1.439-1.962s-.644-1.962-1.439-1.962-1.439.879-1.439 1.962.644 1.962 1.439 1.962z"
-            ></path>
-          </svg>
-        </div>
-        <div
-          v-if="showForm === 'emoji'"
-          class="entity-feed-form-wrapper form-emoji absolute bottom-full right-0 mt-auto order-[10] px-3 z-20">
-          <div class="entity-feed-form relative">
-            <div @click="showForm = false"
-              class="group entity-feed-form__close absolute top-0 right-0 flex items-center justify-center w-6 h-6 text-[#92a3b4] bg-white rounded-full cursor-pointer">
-              <svg width="20"
-                height="20"
-                class="text-[#92a3b4] group-hover:text-[#343f4a]">
-                <use xlink:href="/images/sprite.svg#close" />
-              </svg>
-            </div>
-            <EmojiPicker :native="true" :disable-skin-tones="true" @select="onSelectEmoji" />
-          </div>
-        </div>        
-      </div>
-
-      <div
-        @click="sendMessage"
-        class="p-1 cursor-pointer"
-        v-tooltip.top="{value:``, autoHide: false}"
-        autoHide = "false"
-      >
-        <svg
-          height="24"
-          viewBox="0 0 24 24"
-          width="24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g opacity=".5" fill="currentColor">
-            <path
-              d="m3.45559904 3.48107721 3.26013002 7.74280879c.20897233.4963093.20897233 1.0559187 0 1.552228l-3.26013002 7.7428088 18.83130296-8.5189228zm-.74951511-1.43663117 20.99999997 9.49999996c.3918881.1772827.3918881.7338253 0 .911108l-20.99999997 9.5c-.41424571.1873968-.8433362-.2305504-.66690162-.6495825l3.75491137-8.9179145c.10448617-.2481546.10448617-.5279594 0-.776114l-3.75491137-8.9179145c-.17643458-.41903214.25265591-.83697933.66690162-.64958246z"
-            />
-            <path d="m6 12.5v-1h16.5v1z" />
-          </g>
-        </svg>
-      </div>
-      <!-- <button
-        v-show="!isRecording && newMessage.length === 0"
-        @click="startRecording"
-        class="p-3"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          width="24"
-          height="24"
-        >
-          <path
-            fill="#263238"
-            fill-opacity=".45"
-            d="M11.999 14.942c2.001 0 3.531-1.53 3.531-3.531V4.35c0-2.001-1.53-3.531-3.531-3.531S8.469 2.35 8.469 4.35v7.061c0 2.001 1.53 3.531 3.53 3.531zm6.238-3.53c0 3.531-2.942 6.002-6.237 6.002s-6.237-2.471-6.237-6.002H3.761c0 4.001 3.178 7.297 7.061 7.885v3.884h2.354v-3.884c3.884-.588 7.061-3.884 7.061-7.885h-2z"
-          ></path>
-        </svg>
-      </button> -->
-      <!-- <button v-show="isRecording" @click="stopRecording" class="">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          width="24"
-          height="24"
-        >
-          <path
-            fill="red"
-            fill-opacity=".75"
-            d="M11.999 14.942c2.001 0 3.531-1.53 3.531-3.531V4.35c0-2.001-1.53-3.531-3.531-3.531S8.469 2.35 8.469 4.35v7.061c0 2.001 1.53 3.531 3.53 3.531zm6.238-3.53c0 3.531-2.942 6.002-6.237 6.002s-6.237-2.471-6.237-6.002H3.761c0 4.001 3.178 7.297 7.061 7.885v3.884h2.354v-3.884c3.884-.588 7.061-3.884 7.061-7.885h-2z"
-          ></path>
-        </svg>
-      </button> -->
-      <audio class="hidden" ref="audiosRefs"></audio>
-    </div>
 
     <!-- Listbox -->
-    <Listbox
-      v-if="isInputUserList"
-      v-show="isInputUserListShow"
-      v-model="selectedUser" 
-      @update:modelValue="selectUser"
-      ref="userSelectRef"
-      pt:root:class="absolute w-full bottom-[43px] z-20 rounded-none"
-      :ptOptions = "{mergeProps: true}"
-      optionLabel="name" 
-      optionGroupLabel="label" 
-      optionGroupChildren="items"
-      :options="userListFiltered" 
-      @blur="userListBlur"
-      @keydown.enter.exact.prevent="addSelectedUsers"
-    >
-    <template #footer="slotProps">
+    <Listbox v-if="isInputUserList" v-show="isInputUserListShow" v-model="selectedUser" @update:modelValue="selectUser"
+      ref="userSelectRef" pt:root:class="absolute w-full bottom-[43px] z-20 rounded-none"
+      :ptOptions="{mergeProps: true}" optionLabel="name" optionGroupLabel="label" optionGroupChildren="items"
+      :options="userListFiltered" @blur="userListBlur" @keydown.enter.exact.prevent="addSelectedUsers">
+      <template #footer="slotProps">
         <div class="flex align-items-center">
-          <button 
-            class="w-full py-1 px-2 bg-slate-400 text-white"
-            @click="removeSelectedUsers"
-          > 
+          <button class="w-full py-1 px-2 bg-slate-400 text-white" @click="removeSelectedUsers">
             Очистить
           </button>
         </div>
-    </template>
+      </template>
     </Listbox>
   </div>
   <Menu ref="msgMenuElRef" id="overlay_menu" :model="msgMenuItems" :popup="true" />
-  <CommonMediaGallery
-    :groupMessages = "filteredMessages"
-    :apiBase="apiBase"
-    ref="galleryRef"
-    type="chat"
-  />
+  <CommonMediaGallery :groupMessages="filteredMessages" :apiBase="apiBase" ref="galleryRef" type="chat" />
 </template>
 
 <script setup>
@@ -519,6 +323,65 @@
   
   import { useMainStore } from '@/stores/main.js';
   const store = useMainStore();
+
+
+  //!!! новое аудио
+  import { useAudioRecorder } from '@/utils/recorder.js';
+  const isRecording = ref(true); // Записывается аудио сообщение
+
+  const micFailed = () => {
+      isRecording.value = false;   
+      recorder = initRecorder()
+  } 
+  const initRecorder = () => {
+      isRecording.value = false
+
+      return useAudioRecorder({
+        bitRate: Number(128),
+        sampleRate: Number(new window.AudioContext().sampleRate),
+        beforeRecording: null,
+        afterRecording: null,
+        pauseRecording: null,
+        micFailed: micFailed
+      })
+  } 
+
+  const recorder = initRecorder();
+  console.log('[Chat.vue] recorder ', recorder);
+  
+  const toggleRecorder = (recording) => {
+    isRecording.value = recording;
+    if (!recorder.isRecording.value) {
+      console.log('[Chat.vue] toggleRecorder 1 ');
+      setTimeout(() => recorder.start(), 200)
+    } else {
+      console.log('[Chat.vue] toggleRecorder 2 ');
+      try {
+        recorder.stop()
+        console.log('[Chat.vue] toggleRecorder record.stop', recorder, recorder.records.value );
+
+        const record = recorder.records[0];
+
+        console.log('[Chat.vue] toggleRecorder record', record );
+
+        //!!! this.files.push({
+        // 	blob: record.blob,
+        // 	name: `audio.${this.format}`,
+        // 	size: record.blob.size,
+        // 	duration: record.duration,
+        // 	type: record.blob.type,
+        // 	audio: true,
+        // 	localUrl: URL.createObjectURL(record.blob)
+        // })
+
+        recorder = initRecorder()
+        //!!! this.sendMessage()
+      } catch {
+        //!!! setTimeout(() => this.stopRecorder(), 100)
+      }
+    }      
+  }
+  //!!!
 
   const ptDialog = {
     root: ({ state }) => ({
@@ -602,7 +465,7 @@
   const groupMessages = ref({}); // Все сообщения, сгруппированные по дате, сюда добавляем новые из сокета
   const users = ref([]); // Активные пользователи в чате
   const file = ref(null);
-  const isRecording = ref(false); // Записывается аудио сообщение
+  const showAudio = ref(true);
   const mediaRecorder = ref(null);
   const chunks =  ref([]);
   const audio = ref(null);
@@ -667,8 +530,22 @@
     processImages();
   });
 
+  //!!! test
+  const chatInput = ref(null);
+
+  const audioFiles = ref([]);
+
+  //!!!
+
+
+
+
 
   onMounted( async () => {
+    chatInput.value.addEventListener('input', () => {
+      console.log('handle input - native tests');
+    });
+
     //!!! const runtimeConfig = useRuntimeConfig();
     // apiBase.value = runtimeConfig.public.apiBase;
 
@@ -690,7 +567,7 @@
         threshold: [1],
       }
     );
-    recalcUserInput();
+    // recalcUserInput();
 
     chatBodyRef.value.addEventListener('scroll',throttle((event) => {
       for (let i = 0; i < messagesNotViewed.value.length; i++) {
@@ -701,7 +578,7 @@
           break;
         }
       }      
-    },300))
+    },300));   
 
   });
 
@@ -731,6 +608,12 @@
     return result;
   });
 
+  const isInputEmpty = ref(true);
+
+  const handleInput = () => {
+    console.log('[Chat] handleInput chatInput.value.textContent.trim()',chatInput.value.textContent.trim());
+    isInputEmpty.value = chatInput.value.textContent.trim() == "";
+  };   
 
   const getContacts = async () => {
     //!!! if (!props.contacts && ( props.type == 'deal' || (props.room && props.room.includes('deal')) ) ) {
@@ -745,7 +628,7 @@
   watch(() => props.isActive, async (newValue) => {
     if (newValue) {
       await nextTick();
-      recalcUserInput();
+      // recalcUserInput();
       scrollChatBody();
     }
   })  
@@ -1318,17 +1201,17 @@
         isInputUserListShow.value = false;
       }
     };
-    const recalcUserInput = () => {
-      let userInput = userInputRef.value;
-      let width = userInput.clientWidth;
-      let textarea = newMessageTextareaRef.value.$el;
-      textarea.style.textIndent = `${width + 2}px`;
-    };
+    // const recalcUserInput = () => {
+    //   let userInput = userInputRef.value;
+    //   let width = userInput.clientWidth;
+    //   let textarea = newMessageTextareaRef.value.$el;
+    //   textarea.style.textIndent = `${width + 2}px`;
+    // };
     const addSelectedUsers = async () => {
       let userInput = userInputRef.value;
       userInput.innerText = selectedUser.value?.name ? `@ ${selectedUser.value.name}` : '';
       await nextTick();
-      recalcUserInput();
+      // recalcUserInput();
       isInputUserListShow.value = false;
     };
     const removeSelectedUsers = () => {
@@ -1370,5 +1253,109 @@
 
 </script>
 
-<style scoped>
+<style>
+  .chat-input:focus-visible {
+    outline: none;
+  }
+  .chat-input div:focus-visible {
+    outline: none;
+  }
+  .lexical-rich-text-input {
+    outline: none;
+  }
+  .lexical-rich-text-input div:focus-visible {
+    outline: none;
+  }
+  .chat-input:empty:before {
+    content: 'Введите сообщение';
+    color: #888;
+    pointer-events: none;
+  }  
+
+
+.vac-icon-textarea,
+.vac-icon-textarea-right {
+	display: flex;
+	align-items: center;
+}
+
+.vac-icon-textarea svg,
+.vac-icon-textarea-right svg,
+.vac-icon-textarea .vac-wrapper,
+.vac-icon-textarea-right .vac-wrapper {
+		margin: 0 7px;
+}
+
+
+.vac-icon-textarea svg,
+.vac-icon-textarea-right svg,
+.vac-icon-textarea .vac-wrapper,
+.vac-icon-textarea-right .vac-wrapper
+ {
+  margin: 0 7px;
+}
+
+	.vac-dot-audio-record {
+		height: 15px;
+		width: 15px;
+		border-radius: 50%;
+		background-color: '#0a0a0a';
+		animation: vac-scaling 0.8s ease-in-out infinite alternate;
+
+		@keyframes vac-scaling {
+			0% {
+				transform: scale(1);
+				opacity: 0.4;
+			}
+			100% {
+				transform: scale(1.1);
+				opacity: 1;
+			}
+		}
+	}
+
+	.vac-dot-audio-record-time {
+		font-size: 16px;
+		color: '#0a0a0a';
+		margin-left: 8px;
+		width: 45px;
+	}
+
+  .vac-icon-audio-stop,
+	.vac-icon-audio-confirm {
+		min-height: 28px;
+		min-width: 28px;
+	}
+
+  .vac-icon-audio-confirm svg,
+  .vac-icon-audio-stop svg {
+			min-height: 28px;
+			min-width: 28px;    
+  }
+
+  	.vac-icon-audio-stop {
+		margin-right: 20px;
+	}
+
+  .vac-icon-audio-stop #vac-icon-close-outline {
+    fill: '#eb4034';
+  }
+
+	.vac-icon-audio-confirm {
+		margin-right: 3px;
+		margin-left: 12px;
+	}
+
+  .vac-icon-audio-confirm #vac-icon-checkmark {
+    fill: '#eb4034';
+  }
+
+  .vac-dot-audio-record {
+    background-color: red;
+  }
+
+  .vac-icon-textarea-right {
+    background-color: white;
+  }
+
 </style>
