@@ -10,7 +10,7 @@ import Chat from "@/Components/Chat.vue";
 const imboxActive = ref({
     room: "123",
     // room: 'group__456',
-    title: "Title",
+    title: "Vishal Sahani",
 });
 
 onMounted(() => {
@@ -58,7 +58,7 @@ const onResize = throttle(() => {
                             />
                         </div>
                         <div>
-                            <div class="text-white">
+                            <div class="text-white text-lg font-bold">
                                 {{ imboxActive && imboxActive.title }}
                             </div>
                         </div>
@@ -82,3 +82,10 @@ const onResize = throttle(() => {
         </section>
     </AuthenticatedLayout>
 </template>
+
+
+<style>
+    .messenger {
+        font-family: 'NimbusSans';
+    }
+</style>

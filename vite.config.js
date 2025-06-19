@@ -12,6 +12,8 @@ export default defineConfig({
     },
     build: {
         minify: false,
+        terserOptions: { mangle: false },
+        rollupOptions: { output: { manualChunks: undefined } },        
     },        
     plugins: [
         laravel({
@@ -28,10 +30,10 @@ export default defineConfig({
             },
         }),     
         {
-        name: 'copy-fonts',
-        closeBundle() {
-            cpSync('public/fonts', 'public/build/fonts', { recursive: true });
-        }
+            name: 'copy-fonts',
+                closeBundle() {
+                    cpSync('public/fonts', 'public/build/fonts', { recursive: true });
+                }
         },           
         tailwindcss(),
         Components({

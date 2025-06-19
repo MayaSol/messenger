@@ -68,3 +68,8 @@ public/build
 
 #
 *.old
+
+
+#
+resources/fonts-old/
+public/images/main_reference.jpg

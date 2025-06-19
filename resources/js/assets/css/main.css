@@ -77,12 +77,21 @@
 
 
     .chat-work__msg {
-        max-width: 75%;
         padding: 8px 10px;
         border-radius: 4px;
-        background-color: #fff;
         color: #26292b;
         box-shadow: 0 1px .5px rgba(11,20,26,.13);
+        background-color: #fff;
+    }
+
+    .chat__msg-outer {
+        max-width: 75%;
+    }
+
+    @media (max-width: 900px) {
+        .chat__msg-outer {
+            max-width: 95%;
+        }
     }
 
     .chat-work__msg--me {
@@ -106,11 +115,6 @@
     .chat-work__msg--me .chat-work__msg-user,
     .chat-work__msg--client .chat-work__msg-user{
         /* color: #fff; */
-    }
-
-    .chat-work__created {
-        float: right;
-        margin: 2px 0 -2px 10px;
     }
 
     .chat__date-title {
@@ -223,10 +227,15 @@
 }
 
 
-
+@font-face {
+  font-family: "NimbusSans";
+  src: url("../fonts/NimbusSanL-Reg.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
 
 @font-face {
-  font-family: "NimbusSanLBol";
+  font-family: "NimbusSans";
   src: url("../fonts/NimbusSanLBol.woff") format("woff");
   font-weight: 700;
   font-style: normal;
