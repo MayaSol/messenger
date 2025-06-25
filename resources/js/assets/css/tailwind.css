@@ -96,7 +96,7 @@
         margin: 2px 0 -2px 10px;
     }
 
-    .chat__date-title {
+    /* .chat__date-title {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -104,7 +104,7 @@
         border-radius: 80px;
         font-size: 13px;
         box-shadow: 0 1px 1px #26292b1a;
-    }
+    } */
 
     .chat-feed__entity--event i {
         word-break: break-word;

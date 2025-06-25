@@ -10,7 +10,7 @@ import Chat from "@/Components/Chat.vue";
 const imboxActive = ref({
     room: "123",
     // room: 'group__456',
-    title: "Vishal Sahani",
+    title: "Armin",
 });
 
 onMounted(() => {
@@ -47,10 +47,10 @@ const onResize = throttle(() => {
     <AuthenticatedLayout>
         <section class="messenger absolute h-full w-full flex">
             <div class="flex flex-col max-w-[1000px] ml-auto mr-auto w-full">
-                <div class="flex items-center min-h-[60px] px-[20px] lg:px-[10px] text-surface-0 bg-accent-bg">
+                <div class="flex items-center min-h-[68px] pl-[32px] pr-[20px] text-surface-0 bg-accent-bg">
                     <div class="flex items-center">
                         <div
-                            class="messenger-avatar w-[40px] h-[40px] flex items-center justify-center mr-[10px] bg-[#dfe9ea] text-[0px] leading-none rounded-full overflow-hidden"
+                            class="messenger-avatar w-[44px] h-[44px] flex items-center justify-center mr-[10px] bg-[#dfe9ea] text-[0px] leading-none rounded-full overflow-hidden"
                         >
                             <img
                                 class="block w-[40px] h-[40px]"
@@ -58,7 +58,7 @@ const onResize = throttle(() => {
                             />
                         </div>
                         <div>
-                            <div class="text-white text-lg font-bold">
+                            <div class="text-white text-xl font-bold">
                                 {{ imboxActive && imboxActive.title }}
                             </div>
                         </div>

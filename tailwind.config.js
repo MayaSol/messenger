@@ -21,6 +21,8 @@ export default {
                 'accent-bg': 'var(--accent-bg)',
                 'text-white': 'var(--text-white)',
                 'white': 'var(--white)',
+                'msg-text-fade': 'var(--msg-text-fade)',
+                'msg-blue': 'var(--msg-blue)',
             },
             // colors: {
             //     'primary-inverse': 'var(--p-primary-contrast-color)' ,

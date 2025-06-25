@@ -35,6 +35,12 @@ export default defineConfig({
                     cpSync('public/fonts', 'public/build/fonts', { recursive: true });
                 }
         },           
+        {
+            name: 'copy-videos',
+                closeBundle() {
+                    cpSync('public/videos', 'public/build/videos', { recursive: true });
+                }
+        },           
         tailwindcss(),
         Components({
             resolvers: [

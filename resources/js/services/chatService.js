@@ -1,6 +1,5 @@
 export const fetchMessages = async (room) => {
 
-
     console.log('[chatService.js] fetchMessages room ', room);
     let data;
 
@@ -17,8 +16,8 @@ export const fetchMessages = async (room) => {
             "phone": null,
             "is_viewed": true,
             "whatsapp_id": null,
-            "created_at": "2025-04-21T09:45:23.000000Z",
-            "updated_at": "2025-04-21T09:45:23.000000Z",
+            "created_at": "2025-04-21T16:40:23.000000Z",
+            "updated_at": "2025-04-21T16:40:23.000000Z",
             "deleted_at": null,
             "user": {
                 "id": 4,
@@ -46,11 +45,47 @@ export const fetchMessages = async (room) => {
             }
         },
         {
+            "id": 192,
+            "room": "user__1_4",
+            "reply_to": {
+                "id": 1,
+                "room": "user__3_4",
+                "reply_to": 0,
+                "file": null,
+                "text": "test",
+                "audio": null,
+                "user_id": 4,
+                "recipient": null,
+                "phone": null,
+                "is_viewed": false,
+                "whatsapp_id": null,
+                "created_at": "2025-05-23T14:47:25.000000Z",
+                "updated_at": "2025-05-23T14:47:25.000000Z",
+                "deleted_at": null,
+                "user": { "id": 4, "name": "Maya" }
+            },            
+            "file": null,
+            "text": "Сообщение достаточно длинное, чтобы занимать несколько строк хотя бы на узких эеранах",
+            "audio": null,
+            "user_id": 1,
+            "recipient": null,
+            "phone": null,
+            "is_viewed": false,
+            "whatsapp_id": null,
+            "created_at": "2025-04-21T09:44:53.000000Z",
+            "updated_at": "2025-04-21T09:44:53.000000Z",
+            "deleted_at": null,
+            "user": {
+                "id": 1,
+                "name": "КАС"
+            }
+        },
+        {
             "id": 194,
             "room": "user__1_4",
             "reply_to": null,
             "file": null,
-            "text": "test",
+            "text": '<span class="icon-font-test">😁</span><span class="icon-font-test">😁</span><span class="icon-font-test">😁</span>',
             "audio": null,
             "user_id": 4,
             "recipient": null,
@@ -70,7 +105,7 @@ export const fetchMessages = async (room) => {
             "room": "user__1_4",
             "reply_to": null,
             "file": null,
-            "text": "test",
+            "text": '<span class="icon-font-test">😁</span>',
             "audio": null,
             "user_id": 4,
             "recipient": null,
@@ -84,7 +119,7 @@ export const fetchMessages = async (room) => {
                 "id": 4,
                 "name": "Maya"
             }
-        },
+        },        
         {
             "id": 241,
             "room": "user__1_4",
@@ -268,7 +303,87 @@ export const fetchMessages = async (room) => {
             "updated_at": "2025-06-16T12:29:59.000000Z",
             "deleted_at": null,
             "user": { "id": 4, "name": "Maya" }
+        },
+        {   "id": 1,
+            "room": "user__2_4",
+            "reply_to": null,
+            "file": {
+                "ext": "mp4",
+                "url": "videos/sample-5s.mp4",
+                "mime": "video/mp4",
+                "name": "sample-5s.mp4",
+                "size": 2848208,
+                "dimensions": false
+            },
+            "text": null,
+            "audio": null,
+            "user_id": 4,
+            "recipient": null,
+            "phone": null,
+            "is_viewed": false,
+            "whatsapp_id": null,
+            "created_at": "2025-06-22T15:11:06.000000Z",
+            "updated_at": "2025-06-22T15:11:06.000000Z",
+            "deleted_at": null,
+            "user": {
+                "id": 4,
+                "name": "Maya"
+            }
+        },
+        {
+        "id": 1,
+        "room": "user__2_4",
+        "reply_to": null,
+        "file": {
+            "ext": "mp4",
+            "url": "audios/sample.mp3",
+            "mime": "audio/mpeg",
+            "name": "sample-5s.mp4",
+            "size": 2848208,
+            "dimensions": false
+        },
+        "text": null,
+        "audio": null,
+        "user_id": 4,
+        "recipient": null,
+        "phone": null,
+        "is_viewed": false,
+        "whatsapp_id": null,
+        "created_at": "2025-06-22T15:11:06.000000Z",
+        "updated_at": "2025-06-22T15:11:06.000000Z",
+        "deleted_at": null,
+        "user": {
+            "id": 4,
+            "name": "Maya"
         }
+        },
+        {
+            "id": 1,
+            "room": "user__2_4",
+            "reply_to": null,
+            "file": {
+                "ext": "mp4",
+                "url": "audios/sample.mp3",
+                "mime": "audio/mpeg",
+                "name": "sample-5s.mp4",
+                "size": 2848208,
+                "dimensions": false
+            },
+            "text": null,
+            "audio": null,
+            "user_id": 4,
+            "recipient": null,
+            "phone": null,
+            "is_viewed": false,
+            "whatsapp_id": null,
+            "created_at": "2025-06-22T15:11:06.000000Z",
+            "updated_at": "2025-06-22T15:11:06.000000Z",
+            "deleted_at": null,
+            "user": {
+                "id": 4,
+                "name": "Maya"
+            }
+        }                      
     ]
 
     try {
