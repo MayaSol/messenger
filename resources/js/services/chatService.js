@@ -45,7 +45,7 @@ export const fetchMessages = async (room) => {
             }
         },
         {
-            "id": 192,
+            "id": 193,
             "room": "user__1_4",
             "reply_to": {
                 "id": 1,
@@ -81,7 +81,7 @@ export const fetchMessages = async (room) => {
             }
         },
         {
-            "id": 194,
+            "id": 196,
             "room": "user__1_4",
             "reply_to": null,
             "file": null,
@@ -331,7 +331,7 @@ export const fetchMessages = async (room) => {
             }
         },
         {
-        "id": 1,
+        "id": 101,
         "room": "user__2_4",
         "reply_to": null,
         "file": {
@@ -358,7 +358,7 @@ export const fetchMessages = async (room) => {
         }
         },
         {
-            "id": 1,
+            "id": 102,
             "room": "user__2_4",
             "reply_to": null,
             "file": {

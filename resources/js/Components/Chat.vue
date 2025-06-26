@@ -88,7 +88,9 @@
                       class="flex text-[12px] leading-[130%] bg-[rgba(194,189,184,0.15)] rounded-[7.5px] cursor-pointer">
                       <span class="w-[4px] bg-[#53bdeb] rounded-l-[7.5px]"></span>
                       <div class="pt-[4px] pr-[12px] pl-[8px] pb-[8px]">
-                        <span class="text-msg-blue leading-[19px]">{{ message.reply_to && message.reply_to.user.name }}</span>
+                        <span class="text-msg-blue leading-[19px]">
+                          {{ message.reply_to && message.reply_to.user.name }}
+                        </span>
                         <div class="whitespace-nowrap text-ellipsis overflow-hidden !text-msg-text-fade"
                           @click="(event) => repliedMsgClick(event, message.reply_to)">
                           <div v-if="message.text" class="cursor-pointer">
@@ -114,7 +116,8 @@
                     <div 
                       v-if="message.file && message.file.mime.includes('audio')"
                       class="p-[6px]">
-                      <div class="flex align-center mx-[4px]">
+                      <div class="flex align-center mx-[4px]"
+                        >
                         <div class="messenger-avatar relative w-[44px] h-[44px] flex items-center justify-center mr-[10px] bg-[#dfe9ea] text-[0px] leading-none rounded-full">
                           <img class="block w-[40px] h-[40px]" src="images/user-avatar-default.svg">
                           <div class="icon-phone absolute w-[19px] h-[26px] -right-[5px] -bottom-[5px]">
@@ -127,14 +130,31 @@
                             </span>
                           </div>                         
                         </div>
-                        <span aria-hidden="true" data-icon="audio-play" class="flex items-center text-[rgb(111,129,113)] cursor-pointer">
-                          <svg viewBox="0 0 34 34" height="34" width="34" preserveAspectRatio="xMidYMid meet" class="" version="1.1" x="0px" y="0px" enable-background="new 0 0 34 34">
-                            <path fill="currentColor" d="M8.5,8.7c0-1.7,1.2-2.4,2.6-1.5l14.4,8.3c1.4,0.8,1.4,2.2,0,3l-14.4,8.3 c-1.4,0.8-2.6,0.2-2.6-1.5V8.7z"></path>
-                          </svg>
-                        </span>                          
+                        <button 
+                          aria-hidden="true" 
+                          data-icon="audio-play" 
+                          @click="playAudio(message, $event)"
+                          class="audio-play flex items-center text-[rgb(111,129,113)] cursor-pointer"
+                        >
+                            <svg 
+                              v-if="!audioStatus[message.id] || !audioStatus[message.id].playing"
+                              viewBox="0 0 34 34" height="34" width="34" preserveAspectRatio="xMidYMid meet" class="" version="1.1" x="0px" y="0px" enable-background="new 0 0 34 34">
+                              <path fill="currentColor" d="M8.5,8.7c0-1.7,1.2-2.4,2.6-1.5l14.4,8.3c1.4,0.8,1.4,2.2,0,3l-14.4,8.3 c-1.4,0.8-2.6,0.2-2.6-1.5V8.7z"></path>
+                            </svg>
+
+                            <svg 
+                              v-if="audioStatus[message.id] && audioStatus[message.id].playing"
+                              viewBox="0 0 34 34" height="34" width="34" preserveAspectRatio="xMidYMid meet" class="" version="1.1" x="0px" y="0px" enable-background="new 0 0 34 34">
+                              <path fill="currentColor" d="M9.2,25c0,0.5,0.4,1,0.9,1h3.6c0.5,0,0.9-0.4,0.9-1V9c0-0.5-0.4-0.9-0.9-0.9h-3.6 C9.7,8,9.2,8.4,9.2,9V25z M20.2,8c-0.5,0-1,0.4-1,0.9V25c0,0.5,0.4,1,1,1h3.6c0.5,0,1-0.4,1-1V9c0-0.5-0.4-0.9-1-0.9 C23.8,8,20.2,8,20.2,8z"></path>
+                            </svg>                            
+                        </button>                          
                         <span class="flex items-center w-[200px] grow">
-                          <span class="w-[12px] h-[12px] rounded-full bg-[#4fc3f7]"></span>
-                          <span class="flex-grow border-b-[2px] border-dotted border-[#b1cfaf]"></span>
+                          <!-- <span class="flex-grow border-b-[2px] border-dotted border-[#b1cfaf]"></span> -->
+                          <span 
+                            class="waveform flex-grow"
+                            :ref="(el) => setWaveFormRef(el, message)"
+                          >
+                          </span>
                         </span>
                        
 
@@ -269,152 +289,169 @@
 
     <!-- Input Main -->
     <div class="chat-bottom flex w-ful bottom-0 z-[10] h-[72px]">
-      <div class="flex w-full my-[8px] mx-[8px] rounded-lg overflow-hidden">
+      <div class="input-wrapper flex w-full my-[8px] mx-[8px]">
 
-        <div class="flex items-center w-full relative mr-[8px] rounded-br-lg bg-[#fff]">
-
-          <!-- Уголок -->
-          <div class="chat-message-angle absolute top-0 right-0 translate-x-full">
-            <span aria-hidden="true" data-icon="tail-out" class="_amk7">
-              <svg viewBox="0 0 8 13" height="13" width="8" preserveAspectRatio="xMidYMid meet" class="" version="1.1"
-                x="0px" y="0px" enable-background="new 0 0 8 13">
-                <path opacity="0.13" d="M5.188,1H0v11.193l6.467-8.625 C7.526,2.156,6.958,1,5.188,1z"></path>
-                <path fill="#fff" d="M5.188,0H0v11.193l6.467-8.625C7.526,1.156,6.958,0,5.188,0z"></path>
-              </svg>
-            </span>
-          </div>
-
-          <!--Смайлик-->
-          <div class="chat-input-emoji ml-[12px] text-[0px] leading-[0] cursor-pointer">
-            <button 
-              @click = "toggleEmojiPanel"  
-              class="cursor-pointer" tabindex="0" data-tab="10" type="button" aria-label="Выбор выражений">
-              <span aria-hidden="true" data-icon="expressions" class="">
-                <svg
-                  width="25"
-                  height="25"
-                  viewBox="0 0 523.15625 523.23175"
-                  xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-                  xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-                  xmlns="http://www.w3.org/2000/svg"
-                  xmlns:svg="http://www.w3.org/2000/svg">
-                  <path
-                    style="display:inline;fill:#525252;stroke:#525252;stroke-width:12;stroke-dasharray:none;stroke-opacity:0.996826"
-                    d="m 238.07857,516.51222 c -49.91232,-5.15838 -94.58665,-23.01107 -134.5,-53.74869 C 84.106441,447.76787 58.849193,419.62475 44.171465,396.56861 37.963591,386.81713 25.696184,361.66845 21.203213,349.48276 16.099153,335.6397 10.898697,315.17533 8.3918442,299.06861 5.2678951,278.997 5.2707863,244.10443 8.3980588,224.06861 17.119104,168.19457 41.120889,120.91721 81.024032,81.014073 103.06393,58.974174 122.27291,45.155701 149.07857,32.057292 c 25.26317,-12.34468 47.74012,-19.438259 75,-23.669511 18.68397,-2.9001066 53.97112,-3.1294283 72,-0.4679086 58.57508,8.6471686 108.84654,34.2396156 149.11938,75.9144446 19.72292,20.409523 33.57141,40.088603 45.90644,65.234293 12.24436,24.96087 19.40595,47.66157 23.66091,75 3.12039,20.04878 3.12039,54.95122 0,75 -4.25496,27.33843 -11.41655,50.03913 -23.66091,75 -13.21787,26.94541 -26.96166,46.04491 -48.97128,68.05454 -22.00963,22.00962 -41.10913,35.75341 -68.05454,48.97128 -25.13288,12.32874 -47.9503,19.51991 -74.79912,23.5738 -15.30192,2.31042 -47.3457,3.27591 -61.20088,1.84399 z m 55.97315,-26.57707 c 92.2718,-13.28938 168.01842,-81.3981 190.98076,-171.72325 5.17904,-20.37236 6.86906,-34.27165 6.8873,-56.64329 0.0182,-22.33818 -1.64621,-36.02686 -6.8873,-56.64329 C 464.19,122.9389 399.81153,58.591117 318.07857,38.050994 c -20.93252,-5.260505 -34.26278,-6.851486 -57,-6.803014 -22.52983,0.04803 -38.42485,2.062204 -58.5,7.412959 C 121.6677,60.226621 58.734964,123.85218 38.124658,204.92532 c -5.223766,20.54831 -6.899059,34.30295 -6.899059,56.64329 0,22.34034 1.675293,36.09498 6.899059,56.64329 20.605188,81.053 83.677402,144.81449 164.453912,166.25111 29.47961,7.82335 61.74583,9.75359 91.47315,5.47214 z m -59.97315,-64.2534 c -54.63123,-10.01673 -98.35708,-43.06161 -121.90236,-92.12509 -5.44255,-11.34115 -11.59764,-28.36568 -11.59764,-32.07823 0,-1.87185 3.20068,-1.90982 161,-1.90982 157.79932,0 161,0.038 161,1.90982 0,3.71228 -6.15498,20.73689 -11.60169,32.09018 -22.27397,46.42848 -63.12086,78.90967 -113.89831,90.5712 -10.60912,2.43649 -14.37609,2.79182 -32.5,3.06568 -16.57605,0.25048 -22.41412,-0.0412 -30.5,-1.52374 z m 54.6063,-26.09592 c 39.57697,-7.63109 73.15333,-31.31411 94.38654,-66.57535 1.92894,-3.20332 3.50716,-6.18819 3.50716,-6.63304 0,-0.44486 -56.25,-0.80883 -125,-0.80883 -68.75,0 -125,0.36397 -125,0.80883 0,0.44485 1.57822,3.42972 3.50716,6.63304 17.52993,29.11133 44.00041,50.77943 75.00724,61.39912 23.55983,8.06914 49.22586,9.87441 73.5919,5.17623 z M 165.51736,235.24166 c -12.19784,-3.39096 -19.72836,-14.2479 -18.70711,-26.97051 0.5775,-7.19446 2.38771,-11.25527 7.1324,-15.99996 12.38516,-12.38516 33.29203,-9.06737 41.05733,6.51555 4.62612,9.28343 3.18929,20.53438 -3.60869,28.25729 -6.62271,7.5238 -16.75273,10.73329 -25.87393,8.19763 z m 179.77871,0.24624 c -5.67847,-1.35344 -8.96836,-3.34768 -13.13982,-7.96499 -5.02672,-5.56397 -6.57768,-9.62568 -6.57768,-17.22584 0,-23.34721 27.75948,-34.34377 44.12548,-17.47972 9.68496,9.97969 8.90432,27.37183 -1.64429,36.63363 -6.3546,5.57942 -15.03018,7.88018 -22.76369,6.03692 z"
-                    id="path237"/>
-                </svg>
-              </span>
-            </button>
-          </div>
-
-          <!-- Текст сообщения -->
-          <div
-            class="chat-input grow px-[10px] pt-[14px] pb-[12px] text-lg leading-[18px] text-surface-700 dark:text-surface-0 cursor-pointer dark:bg-surface-600 bg-[#fff]"
-            contenteditable="true" 
-            @input="handleInput" 
-            @keydown="() => console.log('keydown')"
-            @keyup="() => console.log('keyup')" 
-            @blur="console.log('blur')" 
-            ref="chatInput">
-            <!-- <span class="emoji_font">&#x1F469;&#x200D;&#x1F4BB;</span>
-            <span class="emoji_font">😂</span>
-            <span class="nimbus_font text-[40px]">&#x1F602;</span> -->
-            
-            <!-- <audio class="hidden" ref="audiosRefs"></audio> -->
-
-          </div>
-
-          <!--Камера-->
-          <div class="chat-input-camera mr-[12px] text-[0px] leading-[0] cursor-pointer">
-            <button class="cursor-pointer" tabindex="0" data-tab="10" type="button" aria-label="Выбор выражений">
-              <span aria-hidden="true" data-icon="expressions" class="">
-                <svg width="26px" height="26px" viewBox="0 -2 32 32" xmlns="http://www.w3.org/2000/svg"
-                  xmlns:xlink="http://www.w3.org/1999/xlink">
-
-                  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                    <g id="Icon-Set-Filled" transform="translate(-258.000000, -467.000000)" fill="#7f7f7f">
-                      <path
-                        d="M286,471 L283,471 L282,469 C281.411,467.837 281.104,467 280,467 L268,467 C266.896,467 266.53,467.954 266,469 L265,471 L262,471 C259.791,471 258,472.791 258,475 L258,491 C258,493.209 259.791,495 262,495 L286,495 C288.209,495 290,493.209 290,491 L290,475 C290,472.791 288.209,471 286,471 Z M274,491 C269.582,491 266,487.418 266,483 C266,478.582 269.582,475 274,475 C278.418,475 282,478.582 282,483 C282,487.418 278.418,491 274,491 Z M274,477 C270.687,477 268,479.687 268,483 C268,486.313 270.687,489 274,489 C277.313,489 280,486.313 280,483 C280,479.687 277.313,477 274,477 L274,477 Z"
-                        id="camera"></path>
-                    </g>
-                  </g>
-                </svg>
-              </span>
-            </button>
-          </div>            
-
-        </div>
-
-        <!-- Микрофон  -->
-        <div class="vac-box-footer flex items-center justify-center w-[56px] h-[56px] shrink-0"
-          :class="[
-                    { 'vac-box-footer-border': !audioFiles.length }, 
-                    { '!w-auto h-full': isRecording },
-                  ]">
-
-          <div v-if="showAudio && !audioFiles.length" class="audio-record-form vac-icon-textarea-right h-full rounded-md">
-            <template v-if="isRecording">
-              <div class="vac-svg-button vac-icon-audio-stop cursor-pointer" @click="stopRecording">
-                <svg viewBox="0 0 24 25" height="25" width="24" preserveAspectRatio="xMidYMid meet" class="x1n2onr6">
-                  <path
-                    d="M7 21.5C6.45 21.5 5.97917 21.3042 5.5875 20.9125C5.19583 20.5208 5 20.05 5 19.5V6.5C4.71667 6.5 4.47917 6.40417 4.2875 6.2125C4.09583 6.02083 4 5.78333 4 5.5C4 5.21667 4.09583 4.97917 4.2875 4.7875C4.47917 4.59583 4.71667 4.5 5 4.5H9C9 4.21667 9.09583 3.97917 9.2875 3.7875C9.47917 3.59583 9.71667 3.5 10 3.5H14C14.2833 3.5 14.5208 3.59583 14.7125 3.7875C14.9042 3.97917 15 4.21667 15 4.5H19C19.2833 4.5 19.5208 4.59583 19.7125 4.7875C19.9042 4.97917 20 5.21667 20 5.5C20 5.78333 19.9042 6.02083 19.7125 6.2125C19.5208 6.40417 19.2833 6.5 19 6.5V19.5C19 20.05 18.8042 20.5208 18.4125 20.9125C18.0208 21.3042 17.55 21.5 17 21.5H7ZM17 6.5H7V19.5H17V6.5ZM10 17.5C10.2833 17.5 10.5208 17.4042 10.7125 17.2125C10.9042 17.0208 11 16.7833 11 16.5V9.5C11 9.21667 10.9042 8.97917 10.7125 8.7875C10.5208 8.59583 10.2833 8.5 10 8.5C9.71667 8.5 9.47917 8.59583 9.2875 8.7875C9.09583 8.97917 9 9.21667 9 9.5V16.5C9 16.7833 9.09583 17.0208 9.2875 17.2125C9.47917 17.4042 9.71667 17.5 10 17.5ZM14 17.5C14.2833 17.5 14.5208 17.4042 14.7125 17.2125C14.9042 17.0208 15 16.7833 15 16.5V9.5C15 9.21667 14.9042 8.97917 14.7125 8.7875C14.5208 8.59583 14.2833 8.5 14 8.5C13.7167 8.5 13.4792 8.59583 13.2875 8.7875C13.0958 8.97917 13 9.21667 13 9.5V16.5C13 16.7833 13.0958 17.0208 13.2875 17.2125C13.4792 17.4042 13.7167 17.5 14 17.5Z"
-                    fill="currentColor"></path>
-                </svg>
-              </div>
-
-              <div class="vac-dot-audio-record" />
-
-              <div class="vac-dot-audio-record-wave flex-grow w-[50px] px-[5px]" id="waveform">
-                {{ recordedTime }}
-              </div>              
-
-              <!-- <div class="vac-dot-audio-record-time">
-                {{ recordedTime }}
-              </div> -->
-
-              <div class="vac-dot-audio-checkmark mx-[3px] cursor-pointer" @click="stopRecording">
-                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="24" height="24" viewBox="0 0 24 24">
-                  <path id="vac-icon-checkmark" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path>
-                </svg>                
-              </div>
-
-            </template>
-
-          </div>
-
-          <button 
+        <div class="text-input flex w-full rounded-lg">
+          <div 
             v-if="!isRecording"
-            @touchstart="startRecording"
-            class="h-full flex items-center justify-center w-[56px] shrink-0 bg-accent-bg rounded-full cursor-pointer text-[#fff]"
-            tabindex="0" data-tab="11" type="button" aria-label="Голосовое сообщение">
+            class="flex items-center w-full relative mr-[8px] rounded-br-lg bg-[#fff]">
 
-            <span v-if="!isRecording" aria-hidden="true" data-icon="mic-outlined" class="mic-icon">
-              <svg
-                viewBox="0 0 24 24"
-                width="30">
-                <path
-                  d="m 12,12 c 0.2833,0 0.5208,-0.0958 0.7125,-0.2875 C 12.9042,11.5208 13,11.2833 13,11 V 5 C 13,4.71667 12.9042,4.47917 12.7125,4.2875 12.5208,4.09583 12.2833,4 12,4 11.7167,4 11.4792,4.09583 11.2875,4.2875 11.0958,4.47917 11,4.71667 11,5 v 6 c 0,0.2833 0.0958,0.5208 0.2875,0.7125 C 11.4792,11.9042 11.7167,12 12,12 Z"
-                  id="path481" fill="currentColor" />
-                <path
-                  d="m 12,21 c -0.5523,0 -1,-0.4477 -1,-1 V 17.925 C 9.26667,17.6917 7.83333,16.9167 6.7,15.6 5.78727,14.5396 5.24207,13.3387 5.06441,11.9973 4.9919,11.4498 5.44772,11 6,11 c 0.55228,0 0.98782,0.4518 1.0905,0.9945 0.18221,0.9629 0.63954,1.8105 1.372,2.543 C 9.4375,15.5125 10.6167,16 12,16 c 1.3833,0 2.5625,-0.4875 3.5375,-1.4625 0.7325,-0.7325 1.1898,-1.5801 1.372,-2.543 C 17.0122,11.4518 17.4477,11 18,11 c 0.5523,0 1.0081,0.4498 0.9356,0.9973 C 18.7579,13.3387 18.2127,14.5396 17.3,15.6 16.1667,16.9167 14.7333,17.6917 13,17.925 V 20 c 0,0.5523 -0.4477,1 -1,1 z"
-                  id="path479" fill="currentColor"/>
-                <path
-                  d="M 12,14 C 11.1667,14 10.4583,13.7083 9.875,13.125 9.29167,12.5417 9,11.8333 9,11 V 5 C 9,4.16667 9.29167,3.45833 9.875,2.875 10.4583,2.29167 11.1667,2 12,2 12.8333,2 13.5417,2.29167 14.125,2.875 14.7083,3.45833 15,4.16667 15,5 v 6 c 0,0.8333 -0.2917,1.5417 -0.875,2.125 C 13.5417,13.7083 12.8333,14 12,14 Z"
-                  id="path415" fill="currentColor"/>
+            <!-- Уголок -->
+            <div class="chat-message-angle absolute top-0 right-0 translate-x-full">
+              <span aria-hidden="true" data-icon="tail-out" class="_amk7">
+                <svg viewBox="0 0 8 13" height="13" width="8" preserveAspectRatio="xMidYMid meet" class="" version="1.1"
+                  x="0px" y="0px" enable-background="new 0 0 8 13">
+                  <path opacity="0.13" d="M5.188,1H0v11.193l6.467-8.625 C7.526,2.156,6.958,1,5.188,1z"></path>
+                  <path fill="#fff" d="M5.188,0H0v11.193l6.467-8.625C7.526,1.156,6.958,0,5.188,0z"></path>
+                </svg>
+              </span>
+            </div>
+
+            <!--Смайлик-->
+            <div class="chat-input-emoji ml-[12px] text-[0px] leading-[0] cursor-pointer">
+              <button 
+                @click = "toggleEmojiPanel"  
+                class="cursor-pointer" tabindex="0" data-tab="10" type="button" aria-label="Выбор выражений">
+                <span aria-hidden="true" data-icon="expressions" class="">
+                  <svg
+                    width="25"
+                    height="25"
+                    viewBox="0 0 523.15625 523.23175"
+                    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+                    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:svg="http://www.w3.org/2000/svg">
+                    <path
+                      style="display:inline;fill:#525252;stroke:#525252;stroke-width:12;stroke-dasharray:none;stroke-opacity:0.996826"
+                      d="m 238.07857,516.51222 c -49.91232,-5.15838 -94.58665,-23.01107 -134.5,-53.74869 C 84.106441,447.76787 58.849193,419.62475 44.171465,396.56861 37.963591,386.81713 25.696184,361.66845 21.203213,349.48276 16.099153,335.6397 10.898697,315.17533 8.3918442,299.06861 5.2678951,278.997 5.2707863,244.10443 8.3980588,224.06861 17.119104,168.19457 41.120889,120.91721 81.024032,81.014073 103.06393,58.974174 122.27291,45.155701 149.07857,32.057292 c 25.26317,-12.34468 47.74012,-19.438259 75,-23.669511 18.68397,-2.9001066 53.97112,-3.1294283 72,-0.4679086 58.57508,8.6471686 108.84654,34.2396156 149.11938,75.9144446 19.72292,20.409523 33.57141,40.088603 45.90644,65.234293 12.24436,24.96087 19.40595,47.66157 23.66091,75 3.12039,20.04878 3.12039,54.95122 0,75 -4.25496,27.33843 -11.41655,50.03913 -23.66091,75 -13.21787,26.94541 -26.96166,46.04491 -48.97128,68.05454 -22.00963,22.00962 -41.10913,35.75341 -68.05454,48.97128 -25.13288,12.32874 -47.9503,19.51991 -74.79912,23.5738 -15.30192,2.31042 -47.3457,3.27591 -61.20088,1.84399 z m 55.97315,-26.57707 c 92.2718,-13.28938 168.01842,-81.3981 190.98076,-171.72325 5.17904,-20.37236 6.86906,-34.27165 6.8873,-56.64329 0.0182,-22.33818 -1.64621,-36.02686 -6.8873,-56.64329 C 464.19,122.9389 399.81153,58.591117 318.07857,38.050994 c -20.93252,-5.260505 -34.26278,-6.851486 -57,-6.803014 -22.52983,0.04803 -38.42485,2.062204 -58.5,7.412959 C 121.6677,60.226621 58.734964,123.85218 38.124658,204.92532 c -5.223766,20.54831 -6.899059,34.30295 -6.899059,56.64329 0,22.34034 1.675293,36.09498 6.899059,56.64329 20.605188,81.053 83.677402,144.81449 164.453912,166.25111 29.47961,7.82335 61.74583,9.75359 91.47315,5.47214 z m -59.97315,-64.2534 c -54.63123,-10.01673 -98.35708,-43.06161 -121.90236,-92.12509 -5.44255,-11.34115 -11.59764,-28.36568 -11.59764,-32.07823 0,-1.87185 3.20068,-1.90982 161,-1.90982 157.79932,0 161,0.038 161,1.90982 0,3.71228 -6.15498,20.73689 -11.60169,32.09018 -22.27397,46.42848 -63.12086,78.90967 -113.89831,90.5712 -10.60912,2.43649 -14.37609,2.79182 -32.5,3.06568 -16.57605,0.25048 -22.41412,-0.0412 -30.5,-1.52374 z m 54.6063,-26.09592 c 39.57697,-7.63109 73.15333,-31.31411 94.38654,-66.57535 1.92894,-3.20332 3.50716,-6.18819 3.50716,-6.63304 0,-0.44486 -56.25,-0.80883 -125,-0.80883 -68.75,0 -125,0.36397 -125,0.80883 0,0.44485 1.57822,3.42972 3.50716,6.63304 17.52993,29.11133 44.00041,50.77943 75.00724,61.39912 23.55983,8.06914 49.22586,9.87441 73.5919,5.17623 z M 165.51736,235.24166 c -12.19784,-3.39096 -19.72836,-14.2479 -18.70711,-26.97051 0.5775,-7.19446 2.38771,-11.25527 7.1324,-15.99996 12.38516,-12.38516 33.29203,-9.06737 41.05733,6.51555 4.62612,9.28343 3.18929,20.53438 -3.60869,28.25729 -6.62271,7.5238 -16.75273,10.73329 -25.87393,8.19763 z m 179.77871,0.24624 c -5.67847,-1.35344 -8.96836,-3.34768 -13.13982,-7.96499 -5.02672,-5.56397 -6.57768,-9.62568 -6.57768,-17.22584 0,-23.34721 27.75948,-34.34377 44.12548,-17.47972 9.68496,9.97969 8.90432,27.37183 -1.64429,36.63363 -6.3546,5.57942 -15.03018,7.88018 -22.76369,6.03692 z"
+                      id="path237"/>
+                  </svg>
+                </span>
+              </button>
+            </div>
+
+            <!-- Текст сообщения -->
+            <div
+              class="chat-input grow px-[10px] pt-[14px] pb-[12px] text-lg leading-[18px] text-surface-700 dark:text-surface-0 cursor-pointer dark:bg-surface-600 bg-[#fff]"
+              contenteditable="true" 
+              @input="handleInput" 
+              ref="chatInput">
+              <!-- <span class="emoji_font">&#x1F469;&#x200D;&#x1F4BB;</span>
+              <span class="emoji_font">😂</span>
+              <span class="nimbus_font text-[40px]">&#x1F602;</span> -->
+              
+              <!-- <audio class="hidden" ref="audiosRefs"></audio> -->
+
+            </div>
+
+            <!--Камера-->
+            <div class="chat-input-camera mr-[12px] text-[0px] leading-[0] cursor-pointer">
+              <button class="cursor-pointer" tabindex="0" data-tab="10" type="button" aria-label="Выбор выражений">
+                <span aria-hidden="true" data-icon="expressions" class="">
+                  <svg width="26px" height="26px" viewBox="0 -2 32 32" xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+                    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                      <g id="Icon-Set-Filled" transform="translate(-258.000000, -467.000000)" fill="#7f7f7f">
+                        <path
+                          d="M286,471 L283,471 L282,469 C281.411,467.837 281.104,467 280,467 L268,467 C266.896,467 266.53,467.954 266,469 L265,471 L262,471 C259.791,471 258,472.791 258,475 L258,491 C258,493.209 259.791,495 262,495 L286,495 C288.209,495 290,493.209 290,491 L290,475 C290,472.791 288.209,471 286,471 Z M274,491 C269.582,491 266,487.418 266,483 C266,478.582 269.582,475 274,475 C278.418,475 282,478.582 282,483 C282,487.418 278.418,491 274,491 Z M274,477 C270.687,477 268,479.687 268,483 C268,486.313 270.687,489 274,489 C277.313,489 280,486.313 280,483 C280,479.687 277.313,477 274,477 L274,477 Z"
+                          id="camera"></path>
+                      </g>
+                    </g>
+                  </svg>
+                </span>
+              </button>
+            </div>            
+
+          </div>
+
+          <div 
+            v-if="isRecording"
+            class="audio-input w-full flex items-center mr-[8px] rounded-lg bg-[#fff] text-[#ff0000]">
+            <span class="mic-icon blink ml-[10px]">
+              <svg viewBox="0 0 24 24" width="30"><path d="m 12,12 c 0.2833,0 0.5208,-0.0958 0.7125,-0.2875 C 12.9042,11.5208 13,11.2833 13,11 V 5 C 13,4.71667 12.9042,4.47917 12.7125,4.2875 12.5208,4.09583 12.2833,4 12,4 11.7167,4 11.4792,4.09583 11.2875,4.2875 11.0958,4.47917 11,4.71667 11,5 v 6 c 0,0.2833 0.0958,0.5208 0.2875,0.7125 C 11.4792,11.9042 11.7167,12 12,12 Z" id="path481" fill="currentColor"></path><path d="m 12,21 c -0.5523,0 -1,-0.4477 -1,-1 V 17.925 C 9.26667,17.6917 7.83333,16.9167 6.7,15.6 5.78727,14.5396 5.24207,13.3387 5.06441,11.9973 4.9919,11.4498 5.44772,11 6,11 c 0.55228,0 0.98782,0.4518 1.0905,0.9945 0.18221,0.9629 0.63954,1.8105 1.372,2.543 C 9.4375,15.5125 10.6167,16 12,16 c 1.3833,0 2.5625,-0.4875 3.5375,-1.4625 0.7325,-0.7325 1.1898,-1.5801 1.372,-2.543 C 17.0122,11.4518 17.4477,11 18,11 c 0.5523,0 1.0081,0.4498 0.9356,0.9973 C 18.7579,13.3387 18.2127,14.5396 17.3,15.6 16.1667,16.9167 14.7333,17.6917 13,17.925 V 20 c 0,0.5523 -0.4477,1 -1,1 z" id="path479" fill="currentColor"></path><path d="M 12,14 C 11.1667,14 10.4583,13.7083 9.875,13.125 9.29167,12.5417 9,11.8333 9,11 V 5 C 9,4.16667 9.29167,3.45833 9.875,2.875 10.4583,2.29167 11.1667,2 12,2 12.8333,2 13.5417,2.29167 14.125,2.875 14.7083,3.45833 15,4.16667 15,5 v 6 c 0,0.8333 -0.2917,1.5417 -0.875,2.125 C 13.5417,13.7083 12.8333,14 12,14 Z" id="path415" fill="currentColor"></path>
               </svg>
             </span>
+            <span 
+              id="timer" 
+              class="ml-[5px] text-[#000]">
+              {{ audioTimer }}
+            </span>
+          </div>
 
-            <!-- <span v-if="isRecording" aria-hidden="true" data-icon="mic-outlined" class="">
-              <svg viewBox="0 0 24 24" height="24" width="24" preserveAspectRatio="xMidYMid meet" class=""
-                fill="none">
-                <path
-                  d="M5.4 19.425C5.06667 19.5583 4.75 19.5291 4.45 19.3375C4.15 19.1458 4 18.8666 4 18.5V14L12 12L4 9.99997V5.49997C4 5.1333 4.15 4.85414 4.45 4.66247C4.75 4.4708 5.06667 4.44164 5.4 4.57497L20.8 11.075C21.2167 11.2583 21.425 11.5666 21.425 12C21.425 12.4333 21.2167 12.7416 20.8 12.925L5.4 19.425Z"
-                  fill="#fff"></path>
-              </svg>
-            </span> -->
+          <!-- Микрофон  -->
+          <div class="vac-box-footer flex items-center justify-center w-[56px] h-[56px] shrink-0"
+            :class="[
+                      { 'vac-box-footer-border': !audioFiles.length }, 
+                      { '!w-auto h-full': isRecording },
+                    ]">
 
-          </button>
+            <!-- <div v-if="showAudio && !audioFiles.length" 
+              class="audio-record-form vac-icon-textarea-right h-full rounded-md">
+              <template v-if="isRecording">
+                <div class="vac-svg-button vac-icon-audio-stop cursor-pointer" @click="stopRecording">
+                  <svg viewBox="0 0 24 25" height="25" width="24" preserveAspectRatio="xMidYMid meet" class="x1n2onr6">
+                    <path
+                      d="M7 21.5C6.45 21.5 5.97917 21.3042 5.5875 20.9125C5.19583 20.5208 5 20.05 5 19.5V6.5C4.71667 6.5 4.47917 6.40417 4.2875 6.2125C4.09583 6.02083 4 5.78333 4 5.5C4 5.21667 4.09583 4.97917 4.2875 4.7875C4.47917 4.59583 4.71667 4.5 5 4.5H9C9 4.21667 9.09583 3.97917 9.2875 3.7875C9.47917 3.59583 9.71667 3.5 10 3.5H14C14.2833 3.5 14.5208 3.59583 14.7125 3.7875C14.9042 3.97917 15 4.21667 15 4.5H19C19.2833 4.5 19.5208 4.59583 19.7125 4.7875C19.9042 4.97917 20 5.21667 20 5.5C20 5.78333 19.9042 6.02083 19.7125 6.2125C19.5208 6.40417 19.2833 6.5 19 6.5V19.5C19 20.05 18.8042 20.5208 18.4125 20.9125C18.0208 21.3042 17.55 21.5 17 21.5H7ZM17 6.5H7V19.5H17V6.5ZM10 17.5C10.2833 17.5 10.5208 17.4042 10.7125 17.2125C10.9042 17.0208 11 16.7833 11 16.5V9.5C11 9.21667 10.9042 8.97917 10.7125 8.7875C10.5208 8.59583 10.2833 8.5 10 8.5C9.71667 8.5 9.47917 8.59583 9.2875 8.7875C9.09583 8.97917 9 9.21667 9 9.5V16.5C9 16.7833 9.09583 17.0208 9.2875 17.2125C9.47917 17.4042 9.71667 17.5 10 17.5ZM14 17.5C14.2833 17.5 14.5208 17.4042 14.7125 17.2125C14.9042 17.0208 15 16.7833 15 16.5V9.5C15 9.21667 14.9042 8.97917 14.7125 8.7875C14.5208 8.59583 14.2833 8.5 14 8.5C13.7167 8.5 13.4792 8.59583 13.2875 8.7875C13.0958 8.97917 13 9.21667 13 9.5V16.5C13 16.7833 13.0958 17.0208 13.2875 17.2125C13.4792 17.4042 13.7167 17.5 14 17.5Z"
+                      fill="currentColor"></path>
+                  </svg>
+                </div>
 
+                <div class="vac-dot-audio-record" />
+
+                <div class="vac-dot-audio-record-wave flex-grow w-[50px] px-[5px]" id="waveform">
+                  {{ recordedTime }}
+                </div>              
+
+                <div class="vac-dot-audio-checkmark mx-[3px] cursor-pointer" @click="stopRecording">
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="24" height="24" viewBox="0 0 24 24">
+                    <path id="vac-icon-checkmark" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path>
+                  </svg>                
+                </div>
+
+              </template>
+
+            </div> -->
+
+            <button 
+              @mousedown="startRecording"
+              @mouseup="stopRecording"
+              @touchstart="startRecording"
+              @touchend="stopRecording"
+              class="h-full flex items-center justify-center w-[56px] shrink-0 bg-accent-bg rounded-full cursor-pointer text-[#fff]"
+              :class="[
+                isRecording ? 'scale-150' : ''
+              ]"
+              tabindex="0" data-tab="11" type="button" aria-label="Голосовое сообщение">
+
+              <span aria-hidden="true" data-icon="mic-outlined" class="mic-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  width="30">
+                  <path
+                    d="m 12,12 c 0.2833,0 0.5208,-0.0958 0.7125,-0.2875 C 12.9042,11.5208 13,11.2833 13,11 V 5 C 13,4.71667 12.9042,4.47917 12.7125,4.2875 12.5208,4.09583 12.2833,4 12,4 11.7167,4 11.4792,4.09583 11.2875,4.2875 11.0958,4.47917 11,4.71667 11,5 v 6 c 0,0.2833 0.0958,0.5208 0.2875,0.7125 C 11.4792,11.9042 11.7167,12 12,12 Z"
+                    id="path481" fill="currentColor" />
+                  <path
+                    d="m 12,21 c -0.5523,0 -1,-0.4477 -1,-1 V 17.925 C 9.26667,17.6917 7.83333,16.9167 6.7,15.6 5.78727,14.5396 5.24207,13.3387 5.06441,11.9973 4.9919,11.4498 5.44772,11 6,11 c 0.55228,0 0.98782,0.4518 1.0905,0.9945 0.18221,0.9629 0.63954,1.8105 1.372,2.543 C 9.4375,15.5125 10.6167,16 12,16 c 1.3833,0 2.5625,-0.4875 3.5375,-1.4625 0.7325,-0.7325 1.1898,-1.5801 1.372,-2.543 C 17.0122,11.4518 17.4477,11 18,11 c 0.5523,0 1.0081,0.4498 0.9356,0.9973 C 18.7579,13.3387 18.2127,14.5396 17.3,15.6 16.1667,16.9167 14.7333,17.6917 13,17.925 V 20 c 0,0.5523 -0.4477,1 -1,1 z"
+                    id="path479" fill="currentColor"/>
+                  <path
+                    d="M 12,14 C 11.1667,14 10.4583,13.7083 9.875,13.125 9.29167,12.5417 9,11.8333 9,11 V 5 C 9,4.16667 9.29167,3.45833 9.875,2.875 10.4583,2.29167 11.1667,2 12,2 12.8333,2 13.5417,2.29167 14.125,2.875 14.7083,3.45833 15,4.16667 15,5 v 6 c 0,0.8333 -0.2917,1.5417 -0.875,2.125 C 13.5417,13.7083 12.8333,14 12,14 Z"
+                    id="path415" fill="currentColor"/>
+                </svg>
+              </span>
+
+              <!-- <span v-if="isRecording" aria-hidden="true" data-icon="mic-outlined" class="">
+                <svg viewBox="0 0 24 24" height="24" width="24" preserveAspectRatio="xMidYMid meet" class=""
+                  fill="none">
+                  <path
+                    d="M5.4 19.425C5.06667 19.5583 4.75 19.5291 4.45 19.3375C4.15 19.1458 4 18.8666 4 18.5V14L12 12L4 9.99997V5.49997C4 5.1333 4.15 4.85414 4.45 4.66247C4.75 4.4708 5.06667 4.44164 5.4 4.57497L20.8 11.075C21.2167 11.2583 21.425 11.5666 21.425 12C21.425 12.4333 21.2167 12.7416 20.8 12.925L5.4 19.425Z"
+                    fill="#fff"></path>
+                </svg>
+              </span> -->
+
+            </button>
+
+          </div>
         </div>
 
       </div>
@@ -476,29 +513,74 @@ const isMyMessage = (message) => {
 //!!! WAVESURFER.JS
 import WaveSurfer from 'wavesurfer.js'
 import RecordPlugin from 'wavesurfer.js/dist/plugins/record.js';
+import { fa } from "@faker-js/faker";
 
 const isRecording = ref(false); // Записывается аудио сообщение
-const wavesurferInstance = ref(null);
+const isPlaying = ref(false); // Проигрывется аудио сообщение
+const wavesurferInstance = ref({});
 const record = ref(null);
+const audioTimer = ref(null);
 
+let mediaRecorder;
+let audioChunks;
+let startTime;
+let timerInterval;
 
-const startRecording = async () => {
-  console.log('[Chat.vue] startRecording');
-  isRecording.value = true;
+const startRecording = async (e) => {
+  console.log('[Chat.vue] startRecording e ',e);
+  if (e.type === 'touchstart') e.preventDefault();
 
-  // await nextTick();
+  try {
+    // Запрашиваем доступ к микрофону
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
+    // Настройка MediaRecorder
+    mediaRecorder = new MediaRecorder(stream);
+    audioChunks = [];
+    
+    mediaRecorder.ondataavailable = event => {
+      audioChunks.push(event.data);
+    };
+    
+    mediaRecorder.onstop = () => {
+      const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+      // Здесь можно сделать что-то с аудио (отправить на сервер и т.д.)
+      console.log('Аудио записано', audioBlob);
+    };
+    
+    // Начинаем запись
+    mediaRecorder.start();
+    isRecording.value = true;    
 
-  // if (wavesurferInstance.value) {
-  //   wavesurferInstance.value.destroy();
-  // }
+    // Таймер
+    startTime = Date.now();
+    updateTimer();
+    timerInterval = setInterval(updateTimer, 1000);
 
-  // wavesurferInstance.value = WaveSurfer.create({
-  //   container: '#waveform',
-  //   waveColor: '#4F4A85',
-  //   progressColor: '#383351',
-  //   url: '/audio.mp3',
-  // })
+  } catch (error) {
+    console.error('Ошибка доступа к микрофону:', error);
+    alert('Не удалось получить доступ к микрофону. Пожалуйста, проверьте разрешения.');
+  }
+
+  function updateTimer() {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+      const seconds = (elapsed % 60).toString().padStart(2, '0');
+      audioTimer.value = `${minutes}:${seconds}`;
+  }
+
+  await nextTick();
+
+    // if (wavesurferInstance.value) {
+    //   wavesurferInstance.value.destroy();
+    // }
+
+    // wavesurferInstance.value = WaveSurfer.create({
+    //   container: '#waveform',
+    //   waveColor: '#4F4A85',
+    //   progressColor: '#383351',
+    //   url: '/audio.mp3',
+    // })
 
   // record.value = wavesurferInstance.value.registerPlugin(
   //   RecordPlugin.create({
@@ -509,7 +591,6 @@ const startRecording = async () => {
   //   }),
   // )  
 
-
   // // get selected device
   // record.value.startRecording().then(() => {
   //   // recButton.textContent = 'Stop'
@@ -519,7 +600,18 @@ const startRecording = async () => {
 }
 
 const stopRecording = () => {
+  console.log('[Chat.vue] stopRecording');
   isRecording.value = false;
+
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+      mediaRecorder.stop();
+      isRecording.value = false;
+      
+      // Останавливаем все треки в потоке
+      mediaRecorder.stream.getTracks().forEach(track => track.stop());      
+  }  
+
+  clearInterval(timerInterval);
 }
 
 const toggleRecording = () => {
@@ -527,6 +619,96 @@ const toggleRecording = () => {
   if (isRecording.value) {
     startRecording();
   }
+}
+
+const audioStatus = ref({});
+
+const playAudio = async (message,event) => {
+  const audioButton = event.target.closest('.audio-play');
+
+  console.log('[Chat.vue] playAudio el', event, audioButton);
+  console.log('[Chat.vue] playAudio ', wavesurferInstance.value[message.id]);
+
+
+  if (!audioStatus.value[message.id]) {
+    audioStatus.value[message.id] = {};
+  }  
+
+  console.log('!!!!!!!! [Chat.vue] audioStatus.value[message.id] ', audioStatus.value[message.id] && audioStatus.value[message.id].playing);
+
+  if (!audioStatus.value[message.id].playing) {
+    console.log('[Chat.vue] audioStatus 1');
+    wavesurferInstance.value[message.id].play();
+  } else {
+    console.log('[Chat.vue] audioStatus 2');
+    wavesurferInstance.value[message.id].pause();
+  }
+
+  wavesurferInstance.value[message.id].on('play', () => {
+    console.log('[Chat.vue] wavesurferInstance.value[message.id].on(play)');
+    audioStatus.value[message.id].playing = true;
+  });
+
+  wavesurferInstance.value[message.id].on('pause', () => {
+    console.log('[Chat.vue] wavesurferInstance.value[message.id].on(pause');
+    audioStatus.value[message.id].playing = false;
+  });
+
+  wavesurferInstance.value[message.id].on('finish', () => {
+    audioStatus.value[message.id].playing = false;
+  });  
+
+}
+
+const waveFormRefs = ref({});
+
+const setWaveFormRef = (el, message) => {
+  // console.log('[Chat.vue] setWaveFormRef', el, message);
+  if (!el || waveFormRefs.value[message.id] === el) {
+    return; // Элемент уже был обработан или отсутствует
+  }
+  waveFormRefs.value[message.id] = el;
+
+  if (wavesurferInstance.value[message.id]) {
+    wavesurferInstance.value[message.id].destroy();
+    // delete wavesurferInstance.value[message.id]
+  }
+
+  console.log('[Chat.vue] playAudio ', wavesurferInstance.value[message.id]);
+
+
+  wavesurferInstance.value[message.id] = WaveSurfer.create({
+    container: waveFormRefs.value[message.id],
+    waveColor: '#4F4A85',
+    progressColor: '#383351',
+    url: message.file.url,
+    height: 35,
+    barWidth: 2,
+    barGap: 1,
+    barRadius: 2,    
+  });    
+
+  // Добавляем стили курсора в shadow dom
+  wavesurferInstance.value[message.id].on('ready', () => {
+    // Находим Shadow Root контейнера
+    const container = waveFormRefs.value[message.id].querySelector('div');
+    const shadowRoot = container.shadowRoot;
+
+    // Создаём стиль и добавляем его в Shadow DOM
+    const style = document.createElement('style');
+    style.textContent = `
+      :host .cursor {
+        width: 12px !important;
+        height: 12px !important;
+        border-radius: 50% !important;
+        background: #4fc3f7 !important;
+        top: 50% !important;
+        transform: translateY(-50%) translateX(0) !important;
+      }
+    `;
+    shadowRoot.appendChild(style);
+  })  
+
 }
 
 //!!!
@@ -672,7 +854,7 @@ const groupMessages = ref({}); // Все сообщения, сгруппиро�
 const users = ref([]); // Активные пользователи в чате
 const file = ref(null);
 const showAudio = ref(true);
-const mediaRecorder = ref(null);
+// const mediaRecorder = ref(null);
 const chunks = ref([]);
 const audio = ref(null);
 const searchTerm = ref("");
@@ -745,8 +927,6 @@ const audioFiles = ref([]);
 
 
 onMounted(async () => {
-
-
 
   chatInput.value.addEventListener('input', () => {
     console.log('handle input - native tests');
@@ -1024,7 +1204,6 @@ const getPortion = async () => {
 const setObserver = async () => {
   await nextTick();
   if (scrollObserverRef.value && messages.value.length > 0) {
-    console.log('[Chat.vue] setObserver 2 observer',observer.value);
     observer.value.observe(scrollObserverRef.value);
   }
 };
@@ -1346,7 +1525,6 @@ const groupByDate = (messages) => {
     (acc[date] = acc[date] || []).push(cur);  // Если нет acc[date], то создаем пустой
     return acc;
   }, {});
-  console.log('[Chat.vue] groupByDate _groupMessages: ', _groupMessages);
   for (let key of Object.keys(_groupMessages)) {
     _groupMessages[key].reduce((acc, cur) => {
       cur.sameUser = !!(cur.user_id && acc === cur.user_id);
@@ -1701,6 +1879,22 @@ const openUserSelect = async () => {
 
 .chat-emojies-panel.open {
   max-height: 200px; /* Регулируйте по необходимости */
+}
+
+.blink {
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.waveform .cursor {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #4fc3f7;
 }
 
 

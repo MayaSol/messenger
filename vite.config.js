@@ -41,6 +41,12 @@ export default defineConfig({
                     cpSync('public/videos', 'public/build/videos', { recursive: true });
                 }
         },           
+        {
+            name: 'copy-audios',
+                closeBundle() {
+                    cpSync('public/audios', 'public/build/audios', { recursive: true });
+                }
+        },           
         tailwindcss(),
         Components({
             resolvers: [
