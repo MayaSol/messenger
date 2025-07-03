@@ -8,6 +8,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import PrimeVue from "primevue/config";
 import "primeicons/primeicons.css";
 import DialogService from 'primevue/dialogservice';
+import ToastService from 'primevue/toastservice';
 
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
@@ -32,7 +33,7 @@ createInertiaApp({
             // .use(ZiggyVue)
             // .use(VueResizeObserver)
             // .use(DialogService)
-            // .use(ToastService)
+            .use(ToastService)
             // .use(ConfirmationService)
             // .use(createYmaps({
             //   apikey: '1775cc0b-b875-4589-977c-d378cfe05814',

@@ -113,10 +113,17 @@
                       </a>
                     </div>
                     <!-- Аудио -->
+
+
                     <div 
                       v-if="message.file && message.file.mime.includes('audio')"
                       class="p-[6px]">
-                      <div class="flex align-center mx-[4px]"
+
+                      <AudioPlayer 
+                        :message="message"
+                      />
+
+                      <!-- <div class="flex align-center mx-[4px]"
                         >
                         <div class="messenger-avatar relative w-[44px] h-[44px] flex items-center justify-center mr-[10px] bg-[#dfe9ea] text-[0px] leading-none rounded-full">
                           <img class="block w-[40px] h-[40px]" src="images/user-avatar-default.svg">
@@ -149,27 +156,18 @@
                             </svg>                            
                         </button>                          
                         <span class="flex items-center w-[200px] grow">
-                          <!-- <span class="flex-grow border-b-[2px] border-dotted border-[#b1cfaf]"></span> -->
                           <span 
                             class="waveform flex-grow"
                             :ref="(el) => setWaveFormRef(el, message)"
                           >
                           </span>
-                        </span>
-                       
+                        </span>                      
+                      </div> -->
 
-                        <!-- <audio
-                          controls
-                          v-if="message.file && message.file.mime.includes('audio')"
-                        >
-                          <source
-                            :src="`${message.file.url}`"
-                            type="audio/mpeg"
-                          />
-                          Ваш браузер не поддерживает аудио элемент.
-                        </audio> -->
-                      </div>
+
                     </div>
+
+
                     <!-- Файлы pdf -->
                     <!-- <a`
                         class="flex"
@@ -294,7 +292,7 @@
         <div class="text-input flex w-full rounded-lg">
           <div 
             v-if="!isRecording"
-            class="flex items-center w-full relative mr-[8px] rounded-br-lg bg-[#fff]">
+            class="flex items-center w-[calc(100%-56px)] relative mr-[8px] rounded-br-lg bg-[#fff]">
 
             <!-- Уголок -->
             <div class="chat-message-angle absolute top-0 right-0 translate-x-full">
@@ -331,18 +329,25 @@
             </div>
 
             <!-- Текст сообщения -->
-            <div
+            <!-- <div
               class="chat-input grow px-[10px] pt-[14px] pb-[12px] text-lg leading-[18px] text-surface-700 dark:text-surface-0 cursor-pointer dark:bg-surface-600 bg-[#fff]"
               contenteditable="true" 
               @input="handleInput" 
+              @focus="toggleEmojiPanel"
+              @blur="test"
               ref="chatInput">
-              <!-- <span class="emoji_font">&#x1F469;&#x200D;&#x1F4BB;</span>
+              <span class="emoji_font">&#x1F469;&#x200D;&#x1F4BB;</span>
               <span class="emoji_font">😂</span>
-              <span class="nimbus_font text-[40px]">&#x1F602;</span> -->
-              
-              <!-- <audio class="hidden" ref="audiosRefs"></audio> -->
+              <span class="nimbus_font text-[40px]">&#x1F602;</span>              
+            </div> -->
+            
+            <!-- Текст сообщения -->
+            <input
+              class="chat-input grow w-full px-[10px] pt-[14px] pb-[12px] text-lg leading-[18px] text-surface-700 dark:text-surface-0 cursor-pointer dark:bg-surface-600 bg-[#fff]"
+              @focus="toggleEmojiPanel"
+              ref="chatInput"
+            />
 
-            </div>
 
             <!--Камера-->
             <div class="chat-input-camera mr-[12px] text-[0px] leading-[0] cursor-pointer">
@@ -367,8 +372,8 @@
 
           <div 
             v-if="isRecording"
-            class="audio-input w-full flex items-center mr-[8px] rounded-lg bg-[#fff] text-[#ff0000]">
-            <span class="mic-icon blink ml-[10px]">
+            class="audio-input w-full flex items-center mr-[8px] rounded-lg bg-[#fff]">
+            <span class="mic-icon blink ml-[10px] text-[#ff0000]">
               <svg viewBox="0 0 24 24" width="30"><path d="m 12,12 c 0.2833,0 0.5208,-0.0958 0.7125,-0.2875 C 12.9042,11.5208 13,11.2833 13,11 V 5 C 13,4.71667 12.9042,4.47917 12.7125,4.2875 12.5208,4.09583 12.2833,4 12,4 11.7167,4 11.4792,4.09583 11.2875,4.2875 11.0958,4.47917 11,4.71667 11,5 v 6 c 0,0.2833 0.0958,0.5208 0.2875,0.7125 C 11.4792,11.9042 11.7167,12 12,12 Z" id="path481" fill="currentColor"></path><path d="m 12,21 c -0.5523,0 -1,-0.4477 -1,-1 V 17.925 C 9.26667,17.6917 7.83333,16.9167 6.7,15.6 5.78727,14.5396 5.24207,13.3387 5.06441,11.9973 4.9919,11.4498 5.44772,11 6,11 c 0.55228,0 0.98782,0.4518 1.0905,0.9945 0.18221,0.9629 0.63954,1.8105 1.372,2.543 C 9.4375,15.5125 10.6167,16 12,16 c 1.3833,0 2.5625,-0.4875 3.5375,-1.4625 0.7325,-0.7325 1.1898,-1.5801 1.372,-2.543 C 17.0122,11.4518 17.4477,11 18,11 c 0.5523,0 1.0081,0.4498 0.9356,0.9973 C 18.7579,13.3387 18.2127,14.5396 17.3,15.6 16.1667,16.9167 14.7333,17.6917 13,17.925 V 20 c 0,0.5523 -0.4477,1 -1,1 z" id="path479" fill="currentColor"></path><path d="M 12,14 C 11.1667,14 10.4583,13.7083 9.875,13.125 9.29167,12.5417 9,11.8333 9,11 V 5 C 9,4.16667 9.29167,3.45833 9.875,2.875 10.4583,2.29167 11.1667,2 12,2 12.8333,2 13.5417,2.29167 14.125,2.875 14.7083,3.45833 15,4.16667 15,5 v 6 c 0,0.8333 -0.2917,1.5417 -0.875,2.125 C 13.5417,13.7083 12.8333,14 12,14 Z" id="path415" fill="currentColor"></path>
               </svg>
             </span>
@@ -376,6 +381,9 @@
               id="timer" 
               class="ml-[5px] text-[#000]">
               {{ audioTimer }}
+            </span>
+            <span class="ml-auto mr-[20px] md:mr-[0px] text-[12px] text-[#7f7f7f] whitespace-nowrap">
+              <  Проведите, чтобы отменить
             </span>
           </div>
 
@@ -418,9 +426,10 @@
               @mouseup="stopRecording"
               @touchstart="startRecording"
               @touchend="stopRecording"
+              @mouseleave="handleMouseLeave"
               class="h-full flex items-center justify-center w-[56px] shrink-0 bg-accent-bg rounded-full cursor-pointer text-[#fff]"
               :class="[
-                isRecording ? 'scale-150' : ''
+                isRecording ? 'scale-200' : ''
               ]"
               tabindex="0" data-tab="11" type="button" aria-label="Голосовое сообщение">
 
@@ -457,6 +466,14 @@
       </div>
     </div>
     <!---->    
+    <!---->
+    <div 
+      :class="[isEmojiPanelOpen ? '!max-h-[200px]' : '']"
+      class="emoji-panel">
+      <EmojiPanel
+        @select-emoji="onEmojiSelect"
+      />
+    </div>
 
     <div v-if="showForm === 'reply'" class="entity-feed-form-wrapper z-50">
       <div class="entity-feed-form relative p-[10px] bg-white dark:bg-surface-600 rounded">
@@ -484,6 +501,9 @@
   </div>
   <Menu ref="msgMenuElRef" id="overlay_menu" :model="msgMenuItems" :popup="true" />
   <CommonMediaGallery :groupMessages="filteredMessages" :apiBase="apiBase" ref="galleryRef" type="chat" />
+  <Toast 
+    class="!top-0 !right-0 max-w-full"
+  />
 </template>
 
 <script setup>
@@ -491,6 +511,7 @@ import InputText from "primevue/inputtext";
 import Textarea from "primevue/textarea";
 import AvatarGroup from "primevue/avatargroup";
 import Avatar from "primevue/avatar";
+import EmojiPanel from "./EmojiPanel.vue";
 import { ref, nextTick, onUpdated, onMounted, onUnmounted, computed, watch } from "vue";
 //!!! import { fetchMessages, fetchDeal, createMessage, fetchFile  } from '@/services/api/chatWorkServices.js';
 import { fetchMessages } from '@/services/chatService.js';
@@ -498,8 +519,29 @@ import { fetchMessages } from '@/services/chatService.js';
 import throttle from "lodash.throttle";
 import { dateFormat } from '@/utils/date-functions.js';
 
+import AudioPlayer from '@/Components/AudioPlayer.vue';
+
 import { useMainStore } from '@/stores/main.js';
 const store = useMainStore();
+import { useToast } from "primevue/usetoast";
+const toast = useToast();
+
+const test = (e) => {
+  console.log('test',e);
+}
+
+const onEmojiSelect = (emoji) => {
+  console.log('[Chat.vue] onEmojiSelect e', emoji,chatInput.value,chatInput.value.value);
+ // Текущая позиция курсора
+  const startPos = chatInput.value.selectionStart;
+  const endPos = chatInput.value.selectionEnd;
+  //
+  chatInput.value.value = 
+    chatInput.value.value.substring(0,startPos) + 
+    emoji +
+    chatInput.value.value.substring(endPos, chatInput.value.value.length); 
+  console.log('onEmojiSelect startPos endPos', startPos, endPos);
+}
 
 
 const isMyMessage = (message) => {
@@ -512,23 +554,44 @@ const isMyMessage = (message) => {
 
 //!!! WAVESURFER.JS
 import WaveSurfer from 'wavesurfer.js'
-import RecordPlugin from 'wavesurfer.js/dist/plugins/record.js';
-import { fa } from "@faker-js/faker";
 
 const isRecording = ref(false); // Записывается аудио сообщение
 const isPlaying = ref(false); // Проигрывется аудио сообщение
 const wavesurferInstance = ref({});
-const record = ref(null);
 const audioTimer = ref(null);
+
+const isEmojiPanelOpen = ref(false);
+
+const toggleEmojiPanel = () => {
+  console.log('[Chat.vue] toggleEmojiPanel');
+  isEmojiPanelOpen.value = !isEmojiPanelOpen.value;
+}
+
+const touchStartX = ref(0);
+const isSwiping = ref(false);
+const mouseStartX = ref(0); // Начальная позиция мыши
+const isMouseSwiping = ref(false); // Флаг свайпа мышкой
 
 let mediaRecorder;
 let audioChunks;
 let startTime;
 let timerInterval;
 
+
 const startRecording = async (e) => {
-  console.log('[Chat.vue] startRecording e ',e);
-  if (e.type === 'touchstart') e.preventDefault();
+  let date1 = Date.now();
+  console.log('[Chat.vue] startRecording START TIME ', date1);
+
+  if (e.type === 'touchstart') {
+    e.preventDefault();
+    touchStartX.value = e.touches[0].clientX;
+    document.addEventListener('touchmove', handleTouchMove);
+  }
+  else if (e.type === 'mousedown') {
+    mouseStartX.value = e.clientX;
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  }  
 
   try {
     // Запрашиваем доступ к микрофону
@@ -543,19 +606,31 @@ const startRecording = async (e) => {
     };
     
     mediaRecorder.onstop = () => {
-      const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-      // Здесь можно сделать что-то с аудио (отправить на сервер и т.д.)
-      console.log('Аудио записано', audioBlob);
-    };
-    
-    // Начинаем запись
-    mediaRecorder.start();
-    isRecording.value = true;    
+      console.log('[Chat.vue] mediaRecorder.onstop isSwiping.value,isMouseSwiping.value: ', isSwiping.value, isMouseSwiping.value);
+      if (!isSwiping.value && !isMouseSwiping.value) {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+        console.log('Аудио записано', audioBlob);
+        // Отпавить записанное сообщение  
+        //
+        toast.add({ severity: 'info', summary: 'Info', detail: 'Аудио добавлено', life: 10000 });                  
+      }
+      isSwiping.value = false;
+      isMouseSwiping.value = false;
+    }
+          
+      // Начинаем запись
+      mediaRecorder.start();
+      isRecording.value = true;    
+      let date2 = Date.now();
+      console.log('[Chat.vue] startRecording START TIME 2', date2);
 
-    // Таймер
-    startTime = Date.now();
-    updateTimer();
-    timerInterval = setInterval(updateTimer, 1000);
+      console.log('[Chat.vue] startRecording',date2 - date1);
+
+      // Таймер
+      startTime = Date.now();
+      updateTimer();
+      timerInterval = setInterval(updateTimer, 1000);
+    
 
   } catch (error) {
     console.error('Ошибка доступа к микрофону:', error);
@@ -569,7 +644,6 @@ const startRecording = async (e) => {
       audioTimer.value = `${minutes}:${seconds}`;
   }
 
-  await nextTick();
 
     // if (wavesurferInstance.value) {
     //   wavesurferInstance.value.destroy();
@@ -600,10 +674,13 @@ const startRecording = async (e) => {
 }
 
 const stopRecording = () => {
-  console.log('[Chat.vue] stopRecording');
-  isRecording.value = false;
 
-  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+  document.removeEventListener('touchmove', handleTouchMove);
+  document.removeEventListener('mousemove', handleMouseMove);
+  document.removeEventListener('mousemove', handleMouseUp);
+
+
+  if (mediaRecorder && mediaRecorder.state !== 'inactive' && isRecording.value) {
       mediaRecorder.stop();
       isRecording.value = false;
       
@@ -613,6 +690,50 @@ const stopRecording = () => {
 
   clearInterval(timerInterval);
 }
+
+const handleTouchMove = (e) => {
+  console.log('[Chat.vue] handelTouchMove START');
+  const touchX = e.touches[0].clientX;
+  const deltaX = touchX - touchStartX.value;
+  
+  if (deltaX < -50) { // Порог свайпа
+    console.log('[Chat.vue] handelTouchMove SWIPING LEFT');
+    isSwiping.value = true;
+    stopRecording();
+  }  
+}
+
+// Для десктопов (если мышка вышла за пределы кнопки влево - остановить запись, отменить отправку)
+const handleMouseMove = (e) => {
+  if (!isRecording.value) return;
+
+  const mouseX = e.clientX;
+  const deltaX = mouseX - mouseStartX.value;
+  console.log('[Chat.vue] handleMouseMove START deltaX',deltaX);
+
+  // Движение влево (порог 50px)
+  if (deltaX < -50) {
+    isMouseSwiping.value = true;
+    stopRecording();
+  }
+
+  // if (isRecording.value) {
+  //   isSwiping.value = true;
+  //   stopRecording();
+  // }
+};
+
+// Для десктопов (если мышка отпущена - отправить запись)
+const handleMouseUp = (e) => {
+  console.log('[Chat.vue] handleMouseUp START');
+  if (!isRecording.value) return;
+  stopRecording();
+
+  // if (isRecording.value) {
+  //   isSwiping.value = true;
+  //   stopRecording();
+  // }
+};
 
 const toggleRecording = () => {
   isRecording.value = !isRecording.value;
@@ -626,31 +747,21 @@ const audioStatus = ref({});
 const playAudio = async (message,event) => {
   const audioButton = event.target.closest('.audio-play');
 
-  console.log('[Chat.vue] playAudio el', event, audioButton);
-  console.log('[Chat.vue] playAudio ', wavesurferInstance.value[message.id]);
-
-
   if (!audioStatus.value[message.id]) {
     audioStatus.value[message.id] = {};
   }  
 
-  console.log('!!!!!!!! [Chat.vue] audioStatus.value[message.id] ', audioStatus.value[message.id] && audioStatus.value[message.id].playing);
-
   if (!audioStatus.value[message.id].playing) {
-    console.log('[Chat.vue] audioStatus 1');
     wavesurferInstance.value[message.id].play();
   } else {
-    console.log('[Chat.vue] audioStatus 2');
     wavesurferInstance.value[message.id].pause();
   }
 
   wavesurferInstance.value[message.id].on('play', () => {
-    console.log('[Chat.vue] wavesurferInstance.value[message.id].on(play)');
     audioStatus.value[message.id].playing = true;
   });
 
   wavesurferInstance.value[message.id].on('pause', () => {
-    console.log('[Chat.vue] wavesurferInstance.value[message.id].on(pause');
     audioStatus.value[message.id].playing = false;
   });
 
@@ -674,13 +785,10 @@ const setWaveFormRef = (el, message) => {
     // delete wavesurferInstance.value[message.id]
   }
 
-  console.log('[Chat.vue] playAudio ', wavesurferInstance.value[message.id]);
-
-
   wavesurferInstance.value[message.id] = WaveSurfer.create({
     container: waveFormRefs.value[message.id],
-    waveColor: '#4F4A85',
-    progressColor: '#383351',
+    waveColor: '#b0ceae',
+    progressColor: '#728977',
     url: message.file.url,
     height: 35,
     barWidth: 2,
@@ -690,6 +798,9 @@ const setWaveFormRef = (el, message) => {
 
   // Добавляем стили курсора в shadow dom
   wavesurferInstance.value[message.id].on('ready', () => {
+    //
+    //  Стили ползунка
+    //
     // Находим Shadow Root контейнера
     const container = waveFormRefs.value[message.id].querySelector('div');
     const shadowRoot = container.shadowRoot;
@@ -704,9 +815,43 @@ const setWaveFormRef = (el, message) => {
         background: #4fc3f7 !important;
         top: 50% !important;
         transform: translateY(-50%) translateX(0) !important;
+        pointer-events: auto !important;
+        cursor: pointer;
       }
     `;
     shadowRoot.appendChild(style);
+
+
+    //
+    // Перетаскивание ползунка
+    //
+    const waveFormContainer = wavesurferInstance.value[message.id].getWrapper();
+    const cursor = waveFormContainer.querySelector('.cursor');
+
+
+    cursor.addEventListener('pointerdown',(e) => {
+      console.log('[Chat.vue] pointerdown');
+      document.documentElement.removeEventListener('pointermove', pointerMove);
+      document.documentElement.addEventListener('pointermove', pointerMove);
+      document.documentElement.addEventListener("pointerup", pointerUp, {
+        once: true,
+      });
+    })    
+
+    const pointerUp = (e) => {
+      console.log('[Chat.vue] pointerUp');
+      document.documentElement.removeEventListener('pointermove', pointerMove);
+    }
+
+
+    const pointerMove = (e) => {
+      console.log('[Chat.vue] pointermove e.clientX, e.pageX',e.clientX, e.pageX);
+      const box = container.getBoundingClientRect();
+      const x = Math.max(0, Math.min(e.clientX - box.left, box.width));
+      console.log('[Chat.vue] updateTime newTime',((x / box.width)*100).toFixed(2) + '%');
+      cursor.style.left = ((x / box.width)*100).toFixed(2) + '%';
+    }
+ 
   })  
 
 }
@@ -719,7 +864,10 @@ const setWaveFormRef = (el, message) => {
 
 // const micFailed = () => {
 //     isRecording.value = false;   
-//     recorder = initRecorder()
+//     recorder = initRecorder()о
+
+
+
 // } 
 // const initRecorder = () => {
 //     isRecording.value = false
@@ -994,12 +1142,12 @@ const filteredMessages = computed(() => {
   return result;
 });
 
-const isInputEmpty = ref(true);
+// const isInputEmpty = ref(true);
 
-const handleInput = () => {
-  console.log('[Chat] handleInput chatInput.value.textContent.trim()', chatInput.value.textContent.trim());
-  isInputEmpty.value = chatInput.value.textContent.trim() == "";
-};
+// const handleInput = () => {
+//   console.log('[Chat] handleInput chatInput.value.textContent.trim()', chatInput.value.textContent.trim());
+//   isInputEmpty.value = chatInput.value.textContent.trim() == "";
+// };
 
 const getContacts = async () => {
   //!!! if (!props.contacts && ( props.type == 'deal' || (props.room && props.room.includes('deal')) ) ) {
@@ -1058,18 +1206,18 @@ watch(() => props.room,
   { immediate: true }
 ),
 
-  watch(filteredMessages, async () => {
-    await nextTick();
-    if (firstDayEl.value) {
-      chatBodyRef.value.scrollTop = firstDayEl.value.offsetTop;
-      firstDayEl.value = null;
-    }
-    if (firstLoad.value) {
-      scrollChatBody();
-      firstLoad.value = false;
-    }
-    processImages();
-  });
+watch(filteredMessages, async () => {
+  await nextTick();
+  if (firstDayEl.value) {
+    chatBodyRef.value.scrollTop = firstDayEl.value.offsetTop;
+    firstDayEl.value = null;
+  }
+  if (firstLoad.value) {
+    scrollChatBody();
+    firstLoad.value = false;
+  }
+  processImages();
+});
 
 
 watch(messages, async (value) => {
@@ -1505,6 +1653,8 @@ const addMessage = async (message) => {
     await addNotViewed(message);
   }
 }
+
+
 const onSelectEmoji = (emoji) => {
   newMessage.value += emoji.i;
 };
@@ -1870,15 +2020,12 @@ const openUserSelect = async () => {
 }
 
 
-.chat-emojies-panel {
+.emoji-panel {
+  height: 200px;
   max-height: 0;
-  overflow: hidden;
+  overflow: auto;
   transition: max-height 0.3s ease-out;
-  background: #f5f5f5;
-}
-
-.chat-emojies-panel.open {
-  max-height: 200px; /* Регулируйте по необходимости */
+  background: #fff;
 }
 
 .blink {
